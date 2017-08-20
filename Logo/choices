@@ -1,0 +1,4 @@
+to choices :menu [:sofar []]
+if emptyp :menu [print :sofar stop]
+foreach first :menu [(choices butfirst :menu sentence :sofar ?)]
+end
