@@ -1,3 +1,5 @@
+;; Library was created based on UCB Logo's
+
 .macro localmake :name :value
 output (list "local word "" :name "apply ""make (list :name :value))
 end
@@ -28,7 +30,7 @@ to ?rest
 output bf :values
 end
 
-to %
+to #
 output :template.number
 end
 
@@ -76,18 +78,22 @@ end
 
 to map :template :values [:template.number 1]
 if emptyp :values [output :values]
-output combine (apply :template (list first :values)) (map :template butfirst :values :template.number+1)
+output combine (apply :template (list first :values)) ~
+               (map :template butfirst :values :template.number+1)
 end
 
 to filter :template :values [:template.number 1]
 if emptyp :values [output :values]
-if apply :template (list first :values) [output combine (first :values) (filter :template bf :values :template.number+1)]
+if apply :template (list first :values) ~
+   [output combine (first :values) ~
+                   (filter :template bf :values :template.number+1)]
 output (filter :template bf :values :template.number+1)
 end
 
 to reduce :template :values
 if emptyp bf :values [output first :values]
-output apply :template (list (first :values) (reduce :template bf :values))
+output apply :template (list (first :values) ~
+                             (reduce :template bf :values))
 end
 
 to max :a :b
@@ -101,5 +107,6 @@ end
 to map.tree :template :tree
 if wordp :tree [output apply :template (list :tree)]
 if emptyp :tree [output []]
-output fput (map.tree :template first :tree) (map.tree :template bf :tree)
+output fput (map.tree :template first :tree) ~
+            (map.tree :template bf :tree)
 end
