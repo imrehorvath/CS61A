@@ -1,3 +1,6 @@
+;; This example was borrowed from:
+;; https://people.eecs.berkeley.edu/~bh/logo-sample.html
+
 to choices :menu [:sofar []]
 if emptyp :menu [print :sofar stop]
 foreach first :menu [(choices butfirst :menu sentence :sofar ?)]
