@@ -1,3 +1,15 @@
+;; Example was borrowed from:
+;; https://people.eecs.berkeley.edu/~bh/v1ch4/predic.html
+
+to groupie
+local "name
+print [Hi, who are you?]
+make "name readlist
+ifelse :name = [Ray Davies] ~
+     [print [May I have your autograph?]] ~
+     [print sentence "Hi, first :name]
+end
+
 to groupie
 local "name
 print [Hi, who are you?]
