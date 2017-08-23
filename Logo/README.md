@@ -269,7 +269,7 @@ b
 ?
 ```
 
-To quit the Logo interpreter and get back to stklos REPL, use the command `bye`
+To quit the Logo interpreter and get back to the stklos REPL, use the command `bye`
 
 ```
 ? bye
