@@ -139,9 +139,11 @@
 
 (define (test env t/f)
   (cond ((eq? t/f 'TRUE)
-	 (define-variable! " TEST" t/f env))
+	 (define-variable! " TEST" t/f env)
+	 '=no-value=)
 	((eq? t/f 'FALSE)
-	 (define-variable! " TEST" t/f env))
+	 (define-variable! " TEST" t/f env)
+	 '=no-value=)
 	(else (logo-error "Input to TEST not TRUE or FALSE" t/f))))
 
 (define (iftrue env exp)
