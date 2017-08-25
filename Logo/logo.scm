@@ -138,10 +138,10 @@
 ;;; Problem B8   TEST, IFTRUE and IFFALSE
 
 (define (test env t/f)
-  (cond ((or (eq? t/f 'true)
-	     (eq? t/f 'false))
-	 (define-variable! " TEST" t/f env)
-	 '=no-value=)
+  (cond ((eq? t/f 'true)
+	 (define-variable! " TEST" t/f env))
+	((eq? t/f 'false)
+	 (define-variable! " TEST" t/f env))
 	(else (logo-error "Input to TEST not true or false" t/f))))
 
 (define (iftrue env exp)
