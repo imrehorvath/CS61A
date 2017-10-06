@@ -219,6 +219,7 @@
 (add-prim 'append -2 append)
 (add-prim 'item 2 item)
 (add-prim 'count 1 count)
+(add-prim 'reverse 1 reverse)
 (add-prim 'random 1 random)
 
 (add-prim 'sum -2 (make-logo-arith +))
@@ -260,7 +261,7 @@
 (add-prim 'numberp 1 (logo-pred (make-logo-arith number?)))
 (add-prim 'listp 1 (logo-pred list?))
 (add-prim 'wordp 1 (logo-pred (lambda (x) (not (list? x)))))
-(add-prim 'memberp 2 (logo-pred (make-logo-arith member?)))
+(add-prim 'memberp 2 (logo-pred (make-logo-arith member)))
 
 (add-prim 'stop 0 (lambda () '=stop=))
 (add-prim 'output 1 (lambda (x) (cons '=output= x)))
@@ -400,14 +401,16 @@
 					    (cons env
 						  (collect-n-args (car (arg-count proc))
 								  line-obj
-								  env))
+								  env
+								  (procedure-name proc)))
 					    env))
 			       ((and (negative? (arg-count proc))
 				     (not paren-flag))
 				(logo-apply proc
 					    (collect-n-args (abs (arg-count proc))
 							    line-obj
-							    env)
+							    env
+							    (procedure-name proc))
 					    env))
 			       ((and paren-flag            ;; collect args for non-required
 				     (zero? (arg-count proc))
@@ -415,18 +418,21 @@
 				(logo-apply proc
 					    (collect-n-args -1
 							    line-obj
-							    env)
+							    env
+							    (procedure-name proc))
 					    env))
 			       (else
 				(logo-apply proc
 					    (collect-n-args (arg-count proc)
 							    line-obj
-							    env)
+							    env
+							    (procedure-name proc))
 					    env)))))
 		   (handle-macro macro
 				 (collect-n-args (arg-count macro)
 						 line-obj
-						 env)
+						 env
+						 (macro-name macro))
 				 env)) ;; macro
 	       )) )))
   (eval-helper #f))
@@ -455,7 +461,7 @@
         (else
          (logo-error "Unknown procedure type -- LOGO-APPLY " procedure))))
 
-(define (collect-n-args n line-obj env)
+(define (collect-n-args n line-obj env name)
   (cond ((= n 0) '())
 	((and (< n 0) (not (ask line-obj 'empty?)))
 	 (let ((token (ask line-obj 'next)))
@@ -464,13 +470,13 @@
 	       '()
       	       (let ((next (logo-eval line-obj env)))
         	 (cons next
-	      	       (collect-n-args (- n 1) line-obj env)) ))))
+	      	       (collect-n-args (- n 1) line-obj env name)) ))))
 	(else      
       	 (if (not (ask line-obj 'empty?))
 	     (let ((next (logo-eval line-obj env)))
 	       (cons next
-		     (collect-n-args (- n 1) line-obj env)) )
-	     (logo-error "Too few arguments supplied")))))
+		     (collect-n-args (- n 1) line-obj env name)) )
+	     (logo-error "Too few arguments supplied" name)))))
 
 ;;; Section 4.1.2 -- Representing expressions
 
@@ -505,6 +511,9 @@
 (define (lookup-procedure name)
   (assoc name the-procedures))
 
+(define (procedure-name p)
+  (car p))
+
 (define (primitive-procedure? p)
   (eq? (cadr p) 'primitive))
 
@@ -528,6 +537,9 @@
 
 (define (lookup-macro name)
   (assoc name the-macros))
+
+(define (macro-name macro)
+  (car macro))
 
 ;;; Section 4.1.3
 
