@@ -476,7 +476,7 @@
 	     (let ((next (logo-eval line-obj env)))
 	       (cons next
 		     (collect-n-args (- n 1) line-obj env name)) )
-	     (logo-error "Too few arguments supplied" name)))))
+	     (logo-error "Too few arguments supplied -- COLLECT-N-ARGS" name)))))
 
 ;;; Section 4.1.2 -- Representing expressions
 
