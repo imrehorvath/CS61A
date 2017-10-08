@@ -1,0 +1,31 @@
+;; Code borrowed from the book Computer Science Logo Style Second Edition
+;; Volume 1 Symbolic Computing by Brian Harvey MIT Press
+
+to depth.first :node
+process :node
+foreach (children :node) "depth.first
+end
+
+to children :node
+if emptyp last :node [output []]
+output map [child (first :node) ? (butfirst last :node)] ~
+           letters first last :node
+end
+
+to letters :digit
+output item :digit [[] [a b c] [d e f] [g h i] ~
+                       [j k l] [m n o] [p r s] ~
+                       [t u v] [w x y]]
+end
+
+to child :letters :this :digits
+output list (word :letters :this) :digits
+end
+
+to spell :number
+depth.first list " :number
+end
+
+to process :node
+if emptyp last :node [print :node]
+end
