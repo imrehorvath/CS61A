@@ -100,50 +100,6 @@ item 3 has the value c
 ?
 ```
 
-### Map
-
-```
-? show map [?*?] [1 2 3 4]
-[1 4 9 16]
-?
-```
-
-```
-? show map [list ? #] [a b c]
-[[a 1] [b 2] [c 3]]
-?
-```
-
-### Tree map
-
-```
-? show map.tree [first ?] [This [should be] [a [nested [structure]]]]
-[T [s b] [a [n [s]]]]
-?
-```
-
-### Filter
-
-```
-? show filter [?>2] [1 2 3 4]
-[3 4]
-?
-```
-
-### Reduce
-
-```
-? show reduce [word ?1 ?2] map [first ?] [every good boy does fine]
-egbdf
-?
-```
-
-```
-? show reduce [ifelse ?2>?1 [?2] [?1]] [1 22 19]
-22
-?
-```
-
 ### Parens must be used if commands or operations are called with non-defult number of arguments
 
 ```
@@ -220,5 +176,43 @@ Be careful!
 2
 ? (opti 1 5)
 5
+?
+```
+
+### Templates
+
+```
+? show map [?*?] [1 2 3 4]
+[1 4 9 16]
+?
+```
+
+```
+? show map [list ? #] [a b c]
+[[a 1] [b 2] [c 3]]
+?
+```
+
+```
+? show map.tree [first ?] [This [should be] [a [nested [structure]]]]
+[T [s b] [a [n [s]]]]
+?
+```
+
+```
+? show filter [?>2] [1 2 3 4]
+[3 4]
+?
+```
+
+```
+? show reduce [word ?1 ?2] map [first ?] [every good boy does fine]
+egbdf
+?
+```
+
+```
+? show reduce [ifelse ?2>?1 [?2] [?1]] [1 22 19]
+22
 ?
 ```
