@@ -36,11 +36,11 @@ end
 ;; Generate children
 
 to children :path
-output map.ap [children1 :path ?] :pitchers
+output map.append [children1 :path ?] :pitchers
 end
 
 to children1 :path :from
-output map.ap [child :path :from ?] :pitchers
+output map.append [child :path :from ?] :pitchers
 end
 
 to child :path :from :to

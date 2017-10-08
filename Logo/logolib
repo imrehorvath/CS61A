@@ -88,10 +88,10 @@ output sentence (apply :template (list first :values)) ~
                 (map.se :template butfirst :values :template.number+1)
 end
 
-to map.ap :template :values [:template.number 1]
+to map.append :template :values [:template.number 1]
 if emptyp :values [output []]
 output append (apply :template (list first :values)) ~
-              (map.ap :template butfirst :values :template.number+1)
+              (map.append :template butfirst :values :template.number+1)
 end
 
 to filter :template :values [:template.number 1]
