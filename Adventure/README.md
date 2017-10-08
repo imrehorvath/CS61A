@@ -74,10 +74,6 @@ You see here
 **** Error:
 error: You can check out any time you'd like, but you can never leave
 	(type ",help" for more information)
-stklos> east
-**** Error:
-%execute: variable `east' unbound
-	(type ",help" for more information)
 stklos> (fancy-move-loop Imi)
 
 You see here
