@@ -1,16 +1,18 @@
 # Project 4: Logo Interpreter
 
-This is my solution to the Programming Project "Logo Interpreter" with some extras, like optional inputs to procedures, macros and templates.
+This is my solution to the [Programming Project "Logo Interpreter"](https://inst.eecs.berkeley.edu/%7Ecs61a/reader/vol1.html) with some extras, like optional inputs to procedures, macros, templates and more.
 
 This is a Logo interpreter written in Scheme. The language it implements is a subset of the Berkeley Logo language.
 
-Some of its features are demonstrated below. The listing is from an actual interaction with the interpreter.
+Most of the Logo code here are borrowed from-, or based on the amazing book series [Computer Science Logo Style 2nd Edition Volume 1-2 by Brian Harvey Mit Press](https://people.eecs.berkeley.edu/~bh/logo.html).
 
-Most of the Logo code examples and the library are borrowed from the amazing book [Computer Science Logo Style 2nd Edition Volume 2: Advanced Techniques by Brian Harvey Mit Press](https://people.eecs.berkeley.edu/~bh/v2-toc2.html).
+I use the [stklos](http://www.stklos.net) scheme implementation, since it mixes well with the Berkeley CS61A course material. To install stklos on macOS, I use [Homebrew](https://brew.sh).
 
-I use the [stklos Scheme](http://www.stklos.net), since it mixes very well with the Berkeley CS61A course material. To install stklos on macOS, I use [Homebrew](https://brew.sh).
+## Examples
 
-## A complete interaction with the interpreter
+### Some basics
+
+The snippet below can be used to start up the interpreter. (It also loads a small Logo library with useful procedures like `map`, `foreach`, etc.)
 
 ```
 *   STklos version 1.10
@@ -22,6 +24,12 @@ stklos> (load "logo.scm")
 stklos> (load "logo-meta.scm")
 stklos> (initialize-logo)
 ? load "logolib 
+? 
+```
+
+Logo source code can be loaded into the interpreter using the `load` command. The below example load the `choices` command, and uses it to list all the combinations of menu items.
+
+```
 ? load "choices 
 ? choices [[small medium large] ~
            [vanilla [ultra chocolate] lychee [rum raisin] ginger] ~
@@ -56,31 +64,10 @@ large rum raisin cone
 large rum raisin cup
 large ginger cone
 large ginger cup
-? bye
-stklos> 
+? 
 ```
 
-## Some features
-
-To start the interpreter, fire-up stklos and use the below sequence to get a Logo prompt. The Logo prompt starts with a `? `.
-
-```
-stklos> (load "simply.scm")
-stklos> (load "obj.scm")
-stklos> (load "logo.scm")
-stklos> (load "logo-meta.scm")
-stklos> (initialize-logo)
-?
-```
-
-To load library or sources, use
-
-```
-? load "logolib
-?
-```
-
-For loop
+### For loop
 
 ```
 ? for [i 2 7 1.5] [print :i]
@@ -103,68 +90,23 @@ For loop
 ? 
 ```
 
-You can define optional inputs to procedures
+### Foreach
 
 ```
-? to opti :a [:b :a+1]
-> print :b
-> end
-? opti 1
-2
-? (opti 1 5)
-5
+? foreach [a b c] [print (sentence "item # [has the value] ?)]
+item 1 has the value a
+item 2 has the value b
+item 3 has the value c
 ?
 ```
 
-You can define macros
+### Map
 
 ```
-.macro localmake :name :value
-output (list "local word "" :name "apply ""make (list :name :value))
-end
-```
-
-Use map with a template to square a list
-
-```
-? show map [? * ?] [1 2 3 4]
+? show map [?*?] [1 2 3 4]
 [1 4 9 16]
 ?
 ```
-
-Tree map
-
-```
-? show map.tree [first ?] [This [should be] [a [nested [structure]]]]
-[T [s b] [a [n [s]]]]
-?
-```
-
-Filter a list of numbers for a given condition
-
-```
-? show filter [? > 2] [1 2 3 4]
-[3 4]
-?
-```
-
-Use map and reduce to mash the initials of the words of a sentence together to get a single word of the initials
-
-```
-? show reduce [word ?1 ?2] map [first ?] [every good boy does fine]
-egbdf
-?
-```
-
-Find the maximum in a number list
-
-```
-? show reduce [ifelse ?2 > ?1 [?2] [?1]] [1 22 19]
-22
-?
-```
-
-To access the template application count, use the `#` in the template
 
 ```
 ? show map [list ? #] [a b c]
@@ -172,41 +114,56 @@ To access the template application count, use the `#` in the template
 ?
 ```
 
-Foreach
+### Tree map
 
 ```
-? foreach [a b c] [print (sentence [list item] # [has the value] ?)]
-list item 1 has the value a
-list item 2 has the value b
-list item 3 has the value c
+? show map.tree [first ?] [This [should be] [a [nested [structure]]]]
+[T [s b] [a [n [s]]]]
 ?
 ```
 
-Define and use a global variable
+### Filter
 
 ```
-? make "foo 27
-? print :foo
-27
+? show filter [?>2] [1 2 3 4]
+[3 4]
 ?
 ```
 
-Logo is dynamically scoped
+### Reduce
 
 ```
-? make "x 3
-? to scope :x
-> helper 5
-> end
-? to helper :y
-> print (sentence :x :y)
-> end
-? scope 4
-4 5
+? show reduce [word ?1 ?2] map [first ?] [every good boy does fine]
+egbdf
 ?
 ```
 
-Conditionals
+```
+? show reduce [ifelse ?2>?1 [?2] [?1]] [1 22 19]
+22
+?
+```
+
+### Parens must be used if commands or operations are called with non-defult number of arguments
+
+```
+? print sum 2 3
+5
+? print sum 2 3 4
+5
+You don't say what to do with 4
+? print (sum 2 3 4)
+9
+? print (sum 4 5 6 7 8)
+30
+? print (word "a "b "c "d)
+abcd
+? print (sum 4 5 product 6 7 8)
+59
+?
+```
+
+### Conditionals
 
 ```
 ? print ifelse 2=3 [5*6] [8*9]
@@ -226,7 +183,7 @@ Be careful!
 ?
 ```
 
-Prefix- and infix arithmetic operations
+### Prefix- and infix arithmetic
 
 ```
 ? print sum product 3 4 8
@@ -236,42 +193,32 @@ Prefix- and infix arithmetic operations
 ?
 ```
 
-Use parenthesis if the procedure can handle variable number of arguments and you pass different number than the default
+### Dynamic scoping
 
 ```
-? print sum 2 3
-5
-? print sum 2 3 4
-5
-You don't say what to do with 4
-? print (sum 2 3 4)
-9
-? print (sum 4 5 6 7 8)
-30
-? print (word "a "b "c "d)
-abcd
-? print (sum 4 5 product 6 7 8)
-59
+? make "x 3
+? to scope :x
+> helper 5
+> end
+? to helper :y
+> print (sentence :x :y)
+> end
+? scope 4
+4 5
 ?
 ```
 
-Try the commands, `print`, `show` and `type`.
+## More advanced features
+
+### Optional inputs to procedures
 
 ```
-? print [a [b c] d]
-a [b c] d
-? show [a [b c] d]
-[a [b c] d]
-? type [a [b c] d]
-a [b c] d? print "a print "b
-a
-b
+? to opti :a [:b :a+1]
+> print :b
+> end
+? opti 1
+2
+? (opti 1 5)
+5
 ?
-```
-
-To quit the Logo interpreter and get back to the stklos REPL, use the command `bye`
-
-```
-? bye
-stklos>
 ```
