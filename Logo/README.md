@@ -2,7 +2,7 @@
 
 This is my solution to the [Programming Project "Logo Interpreter"](https://inst.eecs.berkeley.edu/%7Ecs61a/reader/vol1.html) with some extras, like optional inputs to procedures, macros, templates and more.
 
-This is a Logo interpreter written in Scheme. The language it implements is a subset of the Berkeley Logo language.
+This is a Logo interpreter written in Scheme. The language it implements is a subset of the Berkeley Logo language. (Note that this implementation lacks the turtle graphics part of Logo and focuses on the symbolic computing part instead.)
 
 Most of the Logo code here are borrowed from-, or based on the amazing book series [Computer Science Logo Style 2nd Edition Volume 1-2 by Brian Harvey Mit Press](https://people.eecs.berkeley.edu/~bh/logo.html).
 
