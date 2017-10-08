@@ -260,7 +260,7 @@
               ((pair? char) (get-symbol char))
               ((eq? char #\")   
                (let ((char (get-char)))   
-                 (if (memq char '(#\[ #\] #\newline))  
+                 (if (memq char '(#\[ #\] #\newline #\space))  
                      (begin (set! lookahead char) quote-symbol)
                      (string->symbol (word quote-symbol
 					   (get-symbol (quoted char)))))))
