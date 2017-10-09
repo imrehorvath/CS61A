@@ -1,10 +1,8 @@
-;; Computer Science Logo Style Second Edition Volume 1 Symbolic Computing
-;; Brian Harvey
-;; Chapter 14 Example: Pitcher Problem Solver
-
-;; This is a slightly modified version of the original supplied code of Harvey.
-;; It uses append instead of sentence to append deep lists (since the underlying sentence refuses to do so...)
-;; Also a missing tilde has been added in the procedure win1.
+;; This is a slightly modified version of the original code found in:
+;;   Computer Science Logo Style, Second Edition, Volume 1 Symbolic Computing by Brian Harvey, MIT Press
+;;   Chapter 14 Example: Pitcher Problem Solver
+;; Because of the underlaying sentence contract, it uses append instead of sentence as a combiner with map.
+;; Also, a missing tilde has been added in the procedure win1.
 
 ;; Initialization
 
