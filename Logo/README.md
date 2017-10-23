@@ -182,7 +182,7 @@ Be careful!
 ### Templates
 
 ```
-? show map [?*?] [1 2 3 4]
+? show map [? * ?] [1 2 3 4]
 [1 4 9 16]
 ?
 ```
@@ -200,7 +200,7 @@ Be careful!
 ```
 
 ```
-? show filter [?>2] [1 2 3 4]
+? show filter [? > 2] [1 2 3 4]
 [3 4]
 ?
 ```
@@ -212,7 +212,7 @@ egbdf
 ```
 
 ```
-? show reduce [ifelse ?2>?1 [?2] [?1]] [1 22 19]
+? show reduce [ifelse ?2 > ?1 [?2] [?1]] [1 22 19]
 22
 ?
 ```
