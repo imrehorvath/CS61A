@@ -378,8 +378,8 @@
             ((variable? token)
 	     (lookup-variable-value (variable-name token) env))
             ((quoted? token) (text-of-quotation token))
-            ((definition? token) (eval-definition line-obj))
-	    ((macro? token) (eval-macro-definition line-obj))
+            ((procedure-definition? token) (eval-definition line-obj))
+	    ((macro-definition? token) (eval-macro-definition line-obj))
 	    ((left-paren? token)
 	     (let ((result (handle-infix (eval-helper #t)
 				       	 line-obj
@@ -390,10 +390,9 @@
 		     (logo-error "Too much inside parens")))))
 	    ((right-paren? token)
 	     (logo-error "Unexpected ')'"))
+	    ((macro-call? token) (execute-macro-call token))
             (else
-	     (let ((macro (lookup-macro token)))
-	       (if (not macro)
-		   (let ((proc (lookup-procedure token)))
+	     (let ((proc (lookup-procedure token)))
 		     (if (not proc)
 			 (logo-error "I don't know how  to " token)
 			 (cond ((pair? (arg-count proc))   ;; proc
@@ -427,16 +426,21 @@
 							    line-obj
 							    env
 							    (procedure-name proc))
-					    env)))))
-		   (handle-macro macro
-				 (collect-n-args (arg-count macro)
-						 line-obj
-						 env
-						 (macro-name macro))
-				 env)) ;; macro
-	       )) )))
+					    env)))))) )))
   (eval-helper #f))
 
+(define (macro-call? token)
+  (let ((macro (lookup-macro token)))
+    macro))
+
+(define (execute-macro-call token)
+  (let ((macro (lookup-macro token)))
+    (handle-macro macro
+		  (collect-n-args (arg-count macro)
+				  line-obj
+				  env
+				  (macro-name macro))
+		  env)))
 
 (define (handle-macro macro arguments env)
   (let ((macro-output (eval-sequence
@@ -503,7 +507,7 @@
 
 ;;; definitions
 
-(define (definition? exp)
+(define (procedure-definition? exp)
   (eq? exp 'to))
 
 ;;; procedures
@@ -532,7 +536,7 @@
 
 ;;; macro
 
-(define (macro? exp)
+(define (macro-definition? exp)
   (equal? exp ".macro"))
 
 (define (lookup-macro name)
