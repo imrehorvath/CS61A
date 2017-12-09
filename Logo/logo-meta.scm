@@ -390,7 +390,14 @@
 		     (logo-error "Too much inside parens")))))
 	    ((right-paren? token)
 	     (logo-error "Unexpected ')'"))
-	    ((macro-call? token) (execute-macro-call token))
+	    ((macro-call? token)
+	     (let ((macro (lookup-macro token)))
+	       (handle-macro macro
+			     (collect-n-args (arg-count macro)
+					     line-obj
+					     env
+					     (macro-name macro))
+			     env)))
             (else
 	     (let ((proc (lookup-procedure token)))
 		     (if (not proc)
@@ -432,15 +439,6 @@
 (define (macro-call? token)
   (let ((macro (lookup-macro token)))
     macro))
-
-(define (execute-macro-call token)
-  (let ((macro (lookup-macro token)))
-    (handle-macro macro
-		  (collect-n-args (arg-count macro)
-				  line-obj
-				  env
-				  (macro-name macro))
-		  env)))
 
 (define (handle-macro macro arguments env)
   (let ((macro-output (eval-sequence
