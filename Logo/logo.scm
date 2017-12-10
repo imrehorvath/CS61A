@@ -120,17 +120,17 @@
 	     env))
 
 (define (logo-if env t/f exp) 
-  (cond ((eq? t/f 'TRUE)
+  (cond ((eq? t/f 'true)
 	 (eval-line (make-line-obj (exp->instruction-list exp))
 		    env))
-        ((eq? t/f 'FALSE) '=no-value=)
+        ((eq? t/f 'false) '=no-value=)
         (else (logo-error "Input to IF not TRUE or FALSE " t/f))))
 
 (define (ifelse env t/f exp1 exp2)  
-  (cond ((eq? t/f 'TRUE)
+  (cond ((eq? t/f 'true)
 	 (eval-line (make-line-obj (exp->instruction-list exp1))
 		    env))
-        ((eq? t/f 'FALSE)
+        ((eq? t/f 'false)
 	 (eval-line (make-line-obj (exp->instruction-list exp2))
 		    env))
         (else (logo-error "Input to IFELSE not TRUE or FALSE " t/f))))
@@ -138,10 +138,10 @@
 ;;; Problem B8   TEST, IFTRUE and IFFALSE
 
 (define (test env t/f)
-  (cond ((eq? t/f 'TRUE)
+  (cond ((eq? t/f 'true)
 	 (define-variable! " TEST" t/f env)
 	 '=no-value=)
-	((eq? t/f 'FALSE)
+	((eq? t/f 'false)
 	 (define-variable! " TEST" t/f env)
 	 '=no-value=)
 	(else (logo-error "Input to TEST not TRUE or FALSE" t/f))))
@@ -150,7 +150,7 @@
   (let ((binding (lookup-variable-binding " TEST" env)))
     (cond ((null? binding)
 	   (logo-error "IFTRUE/IFT can only be used after a TEST"))
-	  ((eq? (cdr binding) 'TRUE)
+	  ((eq? (cdr binding) 'true)
 	   (eval-line (make-line-obj (exp->instruction-list exp))
 		      env))
 	  (else '=no-value=))))
@@ -159,7 +159,7 @@
   (let ((binding (lookup-variable-binding " TEST" env)))
     (cond ((null? binding)
 	   (logo-error "IFFALSE/IFF can only be used after a TEST"))
-	  ((eq? (cdr binding) 'FALSE)
+	  ((eq? (cdr binding) 'false)
 	   (eval-line (make-line-obj (exp->instruction-list exp))
 		      env))
 	  (else '=no-value=))))
@@ -181,16 +181,16 @@
   (lookup-variable-value var env))
 
 (define (logo-not t/f)
-  (cond ((eq? t/f 'TRUE) 'FALSE)
-	((eq? t/f 'FALSE) 'TRUE)
+  (cond ((eq? t/f 'true) 'false)
+	((eq? t/f 'false) 'true)
 	(else (logo-error "NOT called with not a TRUE/FALSE value" t/f))))
 
 ;;; Problem B2   logo-pred
 
 (define (logo-pred pred)   
   (lambda args (if (apply pred args)
-		   'TRUE
-		   'FALSE)))
+		   'true
+		   'false)))
 
 ;;; Here is an example of a Scheme predicate that will be turned into  
 ;;; a Logo predicate by logo-pred:  
