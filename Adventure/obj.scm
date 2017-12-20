@@ -71,9 +71,14 @@
 ;; Note: The 'send-usual-to-parent method is put in automatically by
 ;; define-class.
 
-(define-macro (usual . args)
-	     `(ask dispatch 'send-usual-to-parent . ,args))
+;; (define-macro (usual . args)
+;; 	     `(ask dispatch 'send-usual-to-parent . ,args))
 
+;; Use the standardized macro definition syntax, instead of define-macro.
+
+(define-syntax usual (syntax-rules ()
+		       ((usual args ...)
+			(ask dispatch 'send-usual-to-parent args ...))))
 
 ;; DEFINE-CLASS:  Create a new class.
 
@@ -95,7 +100,13 @@
 ; procedure that lets you examine the result of the OOP-to-Scheme
 ; translation process.
 
-(define-macro (define-class . body) (make-definitions body))
+;; (define-macro (define-class . body) (make-definitions body))
+
+;; Use the standardized macro definition syntax, instead of define-macro.
+
+(define-syntax define-class (syntax-rules ()
+			      ((define-class body ...)
+			       (make-definitions '(body ...)))))
 
 (define (make-definitions form)
   (let ((definition (translate form)))
