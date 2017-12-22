@@ -1,4 +1,4 @@
-;;; logo-meta.scm      Part of programming project #4
+;; logo-meta.scm      Part of programming project #4
 
 ;;; Differences between the book and this version:  Eval and apply have
 ;;; been changed to logo-eval and logo-apply so as not to overwrite the Scheme
@@ -78,6 +78,7 @@
 ;; Eval procedure definitions with required and optional inputs
 
 (define (eval-definition line-obj)
+  (define def-no-args #f)
   (define (collect-formals)
     (define (collect-required)
       (if (ask line-obj 'empty?)
@@ -89,7 +90,7 @@
 		  ((list? formal)
 		   (ask line-obj 'put-back formal)
 		   (collect-optional))
-		  (else (logo-error "Invalid required input"))))))
+		  (else (logo-error "Invalid input to procedure" formal))))))
     (define (collect-optional)
       (if (ask line-obj 'empty?)
 	  '()
@@ -101,7 +102,33 @@
 		   (cons (cons (variable-name (car formal))
 			       (cdr formal))
 			 (collect-optional)))
-		  (else (logo-error "Invalid optional input"))))))
+		  ((or (list? formal)
+		       (number? formal))
+		   (ask line-obj 'put-back formal)
+		   (collect-rest))
+		  (else (logo-error "Invalid input to procedure" formal))))))
+    (define (collect-rest)
+      (let ((formal (ask line-obj 'next)))
+	(cond ((number? formal)
+	       (ask line-obj 'put-back formal)
+	       (collect-def-no-args))
+	      ((and (list? formal)
+		    (not (null? formal))
+		    (variable? (car formal))
+		    (null? (cdr formal)))
+	       (cons (list (variable-name (car formal)))
+		     (collect-def-no-args)))
+	      (logo-error "Invalid input to procedure" formal))))
+    (define (collect-def-no-args)
+      (if (ask line-obj 'empty?)
+	  '()
+	  (let ((formal (ask line-obj 'next)))
+	    (cond ((not (ask line-obj 'empty?))
+		   (logo-error "Invalid input to procedure after" formal))
+		  ((number? formal)
+		   (set! def-no-args formal)
+		   '())
+		  (else (logo-error "Invalid input to procedure" formal))))))
     (collect-required))
   (define (collect-body)
     (define (end-line? line)
@@ -133,8 +160,10 @@
 	       (logo-error "Procedure name is not a word" name))
 	      (else
 	       (let ((formals (collect-formals)))
-		 (let ((arg-count (compute-arg-count formals)))
-		   (let ((body (collect-body)))
+		 (let ((body (collect-body)))
+		   (let ((arg-count (if def-no-args
+					def-no-args
+					(compute-arg-count formals))))
 		     (set! the-procedures
 			   (cons (list name 'compound arg-count (cons formals body))
 				 the-procedures))
@@ -587,7 +616,8 @@
 					    (car args)
 					    frame)
 		     (params-args-loop (cdr params) (cdr args)))))
-	      ((pair? (car params))
+	      ((and (pair? (car params))
+		    (not (null? (cdar params))))
 	       (cond ((null? args)
 		      (let ((result (eval-line (make-line-obj (cdar params))
 					       env)))
@@ -600,6 +630,14 @@
 					     (car args)
 					     frame)
 		      (params-args-loop (cdr params) (cdr args)))))
+	      ((and (pair? (car params))
+		    (null? (cdar params)))
+	       (cond ((null? (cdr params))
+		      (add-binding-to-frame! (caar params)
+					     args
+					     frame)
+		      env)
+		     (else (logo-error "Parameter(s) after rest" (cdr params)))))
 	      (else (logo-error "Unknown parameter" (car params)))))
       (params-args-loop vars vals))))
 
@@ -663,11 +701,9 @@
           (frame-values frame))))
 
 (define (logo-error reason . args)
-      (display "*** Error: ")
-      (display reason)
-      (for-each (lambda (arg) 
-                  (display " ")
-		  (write arg))
-		args)
-      (newline)
-      (back-to-top-level))
+  (display "*** Error: ")
+  (display reason)
+  (for-each (lambda (arg) (display " ") (logo-type (list arg)))
+	    args)
+  (newline)
+  (back-to-top-level))
