@@ -431,8 +431,7 @@
 	     (let ((proc (lookup-procedure token)))
 		     (if (not proc)
 			 (logo-error "I don't know how  to " token)
-			 (cond ((pair? (arg-count proc))   ;; parenthesized arg count => collect as many as
-				                           ;;                   defined, pack env too
+			 (cond ((pair? (arg-count proc))
 				(logo-apply proc
 					    (cons env
 						  (collect-n-args (car (arg-count proc))
@@ -441,26 +440,21 @@
 								  (procedure-name proc)))
 					    env))
 			       ((and (negative? (arg-count proc))
-				     (not paren-flag))     ;; negative arg count, but non-parens call =>
-				                           ;;                 collect default no. of args
+				     (not paren-flag))
 				(logo-apply proc
 					    (collect-n-args (abs (arg-count proc))
 							    line-obj
 							    env
 							    (procedure-name proc))
 					    env))
-			       ((and paren-flag            ;; No required args defined => collect until
-				                           ;;                             closing paren
-				     (zero? (arg-count proc))
-				     (not (null? (procedure-parameters proc))))
+			       (paren-flag
 				(logo-apply proc
 					    (collect-n-args -1
 							    line-obj
 							    env
 							    (procedure-name proc))
 					    env))
-			       (else                       ;; Default case => collect as many as defined,
-				                           ;;            or until closing paren if negative
+			       (else
 				(logo-apply proc
 					    (collect-n-args (arg-count proc)
 							    line-obj
