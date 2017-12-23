@@ -122,3 +122,7 @@ if emptyp :tree [output []]
 output fput (map.tree :template first :tree) ~
             (map.tree :template bf :tree)
 end
+
+to lput :datum :list
+output append :list (list :datum)
+end
