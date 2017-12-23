@@ -416,7 +416,7 @@
 	       (let ((token (ask line-obj 'next)))
 	       	 (if (right-paren? token)
 		     result
-		     (logo-error "Too much inside parens")))))
+		     (logo-error "Too much inside parens" token)))))
 	    ((right-paren? token)
 	     (logo-error "Unexpected ')'"))
 	    ((macro-call? token)
@@ -431,7 +431,8 @@
 	     (let ((proc (lookup-procedure token)))
 		     (if (not proc)
 			 (logo-error "I don't know how  to " token)
-			 (cond ((pair? (arg-count proc))   ;; proc
+			 (cond ((pair? (arg-count proc))   ;; parenthesized arg count => collect as many as
+				                           ;;                   defined, pack env too
 				(logo-apply proc
 					    (cons env
 						  (collect-n-args (car (arg-count proc))
@@ -440,14 +441,16 @@
 								  (procedure-name proc)))
 					    env))
 			       ((and (negative? (arg-count proc))
-				     (not paren-flag))
+				     (not paren-flag))     ;; negative arg count, but non-parens call =>
+				                           ;;                 collect default no. of args
 				(logo-apply proc
 					    (collect-n-args (abs (arg-count proc))
 							    line-obj
 							    env
 							    (procedure-name proc))
 					    env))
-			       ((and paren-flag            ;; collect args for non-required
+			       ((and paren-flag            ;; No required args defined => collect until
+				                           ;;                             closing paren
 				     (zero? (arg-count proc))
 				     (not (null? (procedure-parameters proc))))
 				(logo-apply proc
@@ -456,7 +459,8 @@
 							    env
 							    (procedure-name proc))
 					    env))
-			       (else
+			       (else                       ;; Default case => collect as many as defined,
+				                           ;;            or until closing paren if negative
 				(logo-apply proc
 					    (collect-n-args (arg-count proc)
 							    line-obj
