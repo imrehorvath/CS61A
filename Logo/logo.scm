@@ -330,7 +330,7 @@
 
 (define (prompt string)   
   (if (eq? (current-input-port) tty-port)
-  (begin (display string) (flush))))  
+  (begin (display string) (force-output))))  
 
 (define (meta-load fn)   
   (define (loader)  

@@ -371,7 +371,6 @@
   (call-with-current-continuation
    (lambda (exit-cont)
      (set! exit-logo exit-cont)
-     (logo-read)
      (call-with-current-continuation
       (lambda (top-level-cont)
 	(set! back-to-top-level top-level-cont)))

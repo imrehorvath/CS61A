@@ -110,12 +110,15 @@
 
 (define (make-definitions form)
   (let ((definition (translate form)))
-    (eval `(define ,(maknam (class-name form) '-definition) ',definition))
-    (eval definition)
+    (eval `(define ,(maknam (class-name form) '-definition) ',definition)
+	  (interaction-environment))
+    (eval definition
+	  (interaction-environment))
     (list 'quote (class-name form))))
 
 (define (show-class name)
-  (eval (maknam name '-definition)) )
+  (eval (maknam name '-definition)
+	(interaction-environment)) )
 
 ; TRANSLATE does all the work of DEFINE-CLASS.
 ; The backquote operator (`) works just like regular quote (') except
