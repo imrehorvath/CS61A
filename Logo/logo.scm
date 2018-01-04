@@ -65,10 +65,10 @@
 	(cond ((and (symbol? (car template))
 		    (eq? (first (car template)) '?)
 		    (number? (bf (car template))))    ;;; expand ?<num> into (? <num>)
-	       (cons '|(|
+	       (cons left-paren-symbol
 		     (cons '?
 			   (cons (bf (car template))
-				 (cons '|)|
+				 (cons right-paren-symbol
 				       (expand-slots (cdr template)))))))
 	      ((list? (car template))
 	       (cons (expand-slots (car template))
@@ -91,10 +91,10 @@
 	   (run ext-env (expand-slots template))))
 	((symbol? template)
 	 (apply-template env
-			 (cons '|(|
+			 (cons left-paren-symbol
 			       (cons template
 				     (transform inputlist
-						(list '|)|))))
+						(list right-paren-symbol))))
 			 inputlist))
 	(else
 	 (logo-error "Invalid argument to APPLY-TEMPLATE" template))))
