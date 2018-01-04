@@ -290,7 +290,7 @@
 (add-prim 'numberp 1 (logo-pred (make-logo-arith number?)))
 (add-prim 'listp 1 (logo-pred list?))
 (add-prim 'wordp 1 (logo-pred (lambda (x) (not (list? x)))))
-(add-prim 'memberp 2 (logo-pred (make-logo-arith member)))
+(add-prim 'memberp 2 (logo-pred (make-logo-arith member?)))
 
 (add-prim 'stop 0 (lambda () '=stop=))
 (add-prim 'output 1 (lambda (x) (cons '=output= x)))
@@ -487,7 +487,7 @@
 	   arguments
 	   env)))
         (else
-         (logo-error "Unknown procedure type -- LOGO-APPLY " procedure))))
+         (logo-error "Unknown procedure type" procedure))))
 
 (define (collect-n-args n line-obj env name)
   (cond ((= n 0) '())
@@ -504,7 +504,7 @@
 	     (let ((next (logo-eval line-obj env)))
 	       (cons next
 		     (collect-n-args (- n 1) line-obj env name)) )
-	     (logo-error "Too few arguments supplied -- COLLECT-N-ARGS" name)))))
+	     (logo-error "Too few arguments supplied" name)))))
 
 ;;; Section 4.1.2 -- Representing expressions
 
