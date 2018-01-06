@@ -97,7 +97,7 @@
 						(list right-paren-symbol))))
 			 inputlist))
 	(else
-	 (logo-error "Invalid argument to APPLY-TEMPLATE" template))))
+	 (logo-error "Invalid argument to apply-template" template))))
 
 
 ;;; Problem 4   variables   (logo-meta.scm is also affected)
@@ -124,7 +124,7 @@
 	 (eval-line (make-line-obj (exp->instruction-list exp))
 		    env))
         ((eq? t/f 'false) '=no-value=)
-        (else (logo-error "Input to IF not TRUE or FALSE " t/f))))
+        (else (logo-error "Input to if not true or false" t/f))))
 
 (define (ifelse env t/f exp1 exp2)  
   (cond ((eq? t/f 'true)
@@ -133,7 +133,7 @@
         ((eq? t/f 'false)
 	 (eval-line (make-line-obj (exp->instruction-list exp2))
 		    env))
-        (else (logo-error "Input to IFELSE not TRUE or FALSE " t/f))))
+        (else (logo-error "Input to iflese not true or false" t/f))))
 
 ;;; Problem B8   TEST, IFTRUE and IFFALSE
 
@@ -144,12 +144,12 @@
 	((eq? t/f 'false)
 	 (define-variable! " TEST" t/f env)
 	 '=no-value=)
-	(else (logo-error "Input to TEST not TRUE or FALSE" t/f))))
+	(else (logo-error "Input to test not true or false" t/f))))
 
 (define (iftrue env exp)
   (let ((binding (lookup-variable-binding " TEST" env)))
     (cond ((null? binding)
-	   (logo-error "IFTRUE/IFT can only be used after a TEST"))
+	   (logo-error "iftrue/ift can only be used after a test"))
 	  ((eq? (cdr binding) 'true)
 	   (eval-line (make-line-obj (exp->instruction-list exp))
 		      env))
@@ -158,7 +158,7 @@
 (define (iffalse env exp)
   (let ((binding (lookup-variable-binding " TEST" env)))
     (cond ((null? binding)
-	   (logo-error "IFFALSE/IFF can only be used after a TEST"))
+	   (logo-error "iffalse/iff can only be used after a test"))
 	  ((eq? (cdr binding) 'false)
 	   (eval-line (make-line-obj (exp->instruction-list exp))
 		      env))
@@ -174,7 +174,7 @@
 	 (for-each (lambda (v) (define-variable! v '=unassigned= env))
 		   var)
 	 '=no-value=)
-	(else (logo-error "LOCAL invalid argument" var))))
+	(else (logo-error "invalid argument to local" var))))
 
 
 (define (thing env var)
@@ -183,7 +183,7 @@
 (define (logo-not t/f)
   (cond ((eq? t/f 'true) 'false)
 	((eq? t/f 'false) 'true)
-	(else (logo-error "NOT called with not a TRUE/FALSE value" t/f))))
+	(else (logo-error "called with other then a true/false value. not" t/f))))
 
 ;;; Problem B2   logo-pred
 

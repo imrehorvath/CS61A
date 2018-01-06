@@ -429,7 +429,7 @@
             (else
 	     (let ((proc (lookup-procedure token)))
 		     (if (not proc)
-			 (logo-error "I don't know how  to " token)
+			 (logo-error "I don't know how  to" token)
 			 (cond ((pair? (arg-count proc))
 				(logo-apply proc
 					    (cons env
@@ -593,8 +593,8 @@
   (if (= (length vars) (length vals))
       (cons (make-frame vars vals) base-env)
       (if (< (length vars) (length vals))
-          (logo-error "Too many arguments supplied " vars vals)
-          (logo-error "Too few arguments supplied " vars vals))))
+          (logo-error "Too many arguments supplied" vars vals)
+          (logo-error "Too few arguments supplied" vars vals))))
 
 (define (extend-environment-for-proc-application vars vals base-env)
   (let ((env (cons (make-frame '() '())
@@ -649,7 +649,7 @@
 		 (car vals)))
             (else (scan (cdr vars) (cdr vals)))))
     (if (eq? env the-empty-environment)
-        (logo-error "Unbound variable " var)
+        (logo-error "Unbound variable" var)
         (let ((frame (first-frame env)))
           (scan (frame-variables frame)
                 (frame-values frame)))))
