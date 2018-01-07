@@ -58,6 +58,8 @@
 
 ;; Apply template to arguments
 
+(define template-inputs-var 'template.inputs)
+
 (define (apply-template env template inputlist)
   (define (expand-slots template)
     (if (null? template)
@@ -78,7 +80,7 @@
 		     (expand-slots (cdr template)))))))
   (cond ((list? template)
 	 (let ((ext-env (extend-environment
-			 '(template.inputs)
+			 (list template-inputs-var)
 			 (list inputlist)
 			 env)))
 	   (run ext-env (expand-slots template))))
