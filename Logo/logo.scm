@@ -82,7 +82,7 @@
 			 (list inputlist)
 			 env)))
 	   (run ext-env (expand-slots template))))
-	((symbol? template)
+	((word? template)
 	 (let ((proc (lookup-procedure template)))
 	   (if (not proc)
 	       (logo-error "I don't know how to" template)
