@@ -76,13 +76,6 @@
 	      (else
 	       (cons (car template)
 		     (expand-slots (cdr template)))))))
-  (define (transform inputlist tail)
-    (define (transform1 inputlist n)
-      (if (null? inputlist)
-	  tail
-	  (cons (word '? n)
-		(transform1 (cdr inputlist) (+ n 1)))))
-    (transform1 inputlist 1))
   (cond ((list? template)
 	 (let ((ext-env (extend-environment
 			 '(template.inputs)
@@ -90,12 +83,14 @@
 			 env)))
 	   (run ext-env (expand-slots template))))
 	((symbol? template)
-	 (apply-template env
-			 (cons left-paren-symbol
-			       (cons template
-				     (transform inputlist
-						(list right-paren-symbol))))
-			 inputlist))
+	 (let ((proc (lookup-procedure template)))
+	   (if (not proc)
+	       (logo-error "I don't know how to" template)
+	       (if (pair? (arg-count proc))
+		   (logo-apply proc
+			       (cons env inputlist)
+			       env)
+		   (logo-apply proc inputlist env)))))
 	(else
 	 (logo-error "Invalid argument to apply-template" template))))
 
