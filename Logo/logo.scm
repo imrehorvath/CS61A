@@ -200,6 +200,12 @@
 (define (namep env var)
   (not (null? (lookup-variable-binding var env))))
 
+;;; Dispatch between Scheme's library procedure member and Simpy's
+
+(define (member-disp x stuff)
+  (cond ((pair? x) (member x stuff))
+	(else (member? x stuff))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;;  Stuff below here is needed for the interpreter to work but you  ;;;  
