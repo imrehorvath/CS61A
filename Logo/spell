@@ -1,4 +1,4 @@
-;; Code borrowed from the book Computer Science Logo Style Second Edition
+;; Code borrowed from the book Computer Science Logo Style 2nd Edition
 ;; Volume 1 Symbolic Computing by Brian Harvey MIT Press
 
 to depth.first :node
