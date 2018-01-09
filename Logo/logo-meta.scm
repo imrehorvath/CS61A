@@ -259,6 +259,7 @@
 (add-prim 'quotient 2 (make-logo-arith /))
 (add-prim 'remainder 2 (make-logo-arith remainder))
 (add-prim 'sqrt 1 (make-logo-arith sqrt))
+(add-prim 'abs 1 (make-logo-arith abs))
 
 (add-prim 'print 1 logo-print)
 (add-prim 'pr 1 logo-print)
