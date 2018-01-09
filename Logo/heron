@@ -1,0 +1,24 @@
+to h.good.enufp
+op lessp abs difference square :guess :x .001
+end
+
+to h.improve.guess
+op average :guess quotient :x :guess
+end
+
+to h.sqrt.iter :guess
+if h.good.enufp [op :guess]
+op h.sqrt.iter h.improve.guess
+end
+
+to heron.sqrt :x
+op h.sqrt.iter 1.
+end
+
+to average :x :y
+op quotient sum :x :y 2.
+end
+
+to square :x
+op product :x :x
+end
