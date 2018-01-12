@@ -1,0 +1,3 @@
+to ? [:index 1]
+output item :index :template.inputs
+end

@@ -1,0 +1,5 @@
+to map :template :values [:template.number 1]
+if emptyp :values [output :values]
+output combine (apply :template (list first :values)) ~
+               (map :template butfirst :values :template.number+1)
+end
