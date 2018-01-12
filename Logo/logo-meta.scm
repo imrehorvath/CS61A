@@ -164,9 +164,7 @@
 		   (let ((arg-count (if def-no-args
 					def-no-args
 					(compute-arg-count formals))))
-		     (set! the-procedures
-			   (cons (list name 'compound arg-count (cons formals body))
-				 the-procedures))
+		     (add-compound name arg-count formals body)
 		     '=no-value=))))))))
 
 
@@ -538,7 +536,30 @@
 ;;; procedures
 
 (define (lookup-procedure name)
-  (assoc name the-procedures))
+  (let ((proc (assoc name the-procedures)))
+    (if proc
+	proc
+	(let ((lib-name (string-append "logolib/"
+				       (symbol->string name))))
+	  (cond ((file-exists? lib-name)
+		 (meta-load lib-name)
+		 (let ((lp (assoc name the-procedures)))
+		   (if lp
+		       lp
+		       (logo-error "Library does not contain definition" name))))
+		(else #f))))))
+
+(define (add-compound name arg-count formals body)
+  (define (delete name procs)
+    (cond ((null? procs) '())
+	  ((eq? name (car (car procs))) (cdr procs))
+	  (else (cons (car procs) (delete name (cdr procs))))))
+  (if (assoc name the-procedures)
+      (set! the-procedures
+	    (delete name the-procedures)))
+  (set! the-procedures
+	(cons (list name 'compound arg-count (cons formals body))
+	      the-procedures)))
 
 (define (procedure-name p)
   (car p))
