@@ -46,6 +46,7 @@
 				(- . difference)
 				(* . product)
 				(/ . quotient)
+				(% . remainder)
 				(= . equalp)
 				(< . lessp)
 				(> . greaterp)))
