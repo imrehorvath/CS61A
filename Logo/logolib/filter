@@ -1,0 +1,7 @@
+to filter :template :values [:template.number 1]
+if emptyp :values [output :values]
+if apply :template (list first :values) ~
+   [output combine (first :values) ~
+                   (filter :template bf :values :template.number+1)]
+output (filter :template bf :values :template.number+1)
+end

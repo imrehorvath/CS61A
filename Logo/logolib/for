@@ -1,0 +1,22 @@
+to for :values :instr
+localmake "var first :values
+local :var
+localmake "initial run first butfirst :values
+localmake "final run item 3 :values
+localmake "step forstep
+localmake "tester ifelse :step < 0 [[:value < :final]] [[:value > :final]]
+forloop :initial
+end
+
+to forstep
+if (count :values)=4 [output run last :values]
+if :initial > :final [output -1]
+output 1
+end
+
+to forloop :value
+make :var :value
+if run :tester [stop]
+run :instr
+forloop :value+:step
+end

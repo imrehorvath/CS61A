@@ -1,0 +1,3 @@
+to butfirsts :list.of.lists
+output map "butfirst :list.of.lists
+end
