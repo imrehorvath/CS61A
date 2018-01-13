@@ -552,7 +552,7 @@
 (define (add-compound name arg-count formals body)
   (define (delete name procs)
     (cond ((null? procs) '())
-	  ((eq? name (car (car procs))) (cdr procs))
+	  ((eq? name (caar procs)) (cdr procs))
 	  (else (cons (car procs) (delete name (cdr procs))))))
   (if (assoc name the-procedures)
       (set! the-procedures
