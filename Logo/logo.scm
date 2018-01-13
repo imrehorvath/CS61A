@@ -239,7 +239,7 @@
       (define (iter sofar char)
         (cond ((pair? char) (iter (cons (car char) sofar) (get-char))) 
               ((memq char  
-                     '(#\space #\newline #\+ #\- #\* #\/  
+                     '(#\space #\newline #\+ #\- #\* #\/ #\% 
                                #\= #\< #\> #\( #\) #\[ #\] #\~ ))
                (set! lookahead char)   
                sofar) 
@@ -248,7 +248,7 @@
     (define (get-token space-flag)   
       (let ((char (get-char)))   
               (cond ((eq? char #\space) (get-token #t))  
-              ((memq char '(#\+ #\* #\/ #\= #\< #\> #\( #\) ))   
+              ((memq char '(#\+ #\* #\/ #\% #\= #\< #\> #\( #\) ))   
                (string->symbol (make-string 1 char)))
               ((eq? char #\-)   
                (if space-flag  
