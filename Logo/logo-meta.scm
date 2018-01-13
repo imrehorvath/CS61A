@@ -537,7 +537,9 @@
     (if proc
 	proc
 	(let ((lib-name (string-append "logolib/procedures/"
-				       (symbol->string name))))
+				       (if (symbol? name)
+					   (symbol->string name)
+					   name))))
 	  (cond ((file-exists? lib-name)
 		 (meta-load lib-name)
 		 (let ((lproc (assoc name the-procedures)))
@@ -587,7 +589,9 @@
     (if macro
 	macro
 	(let ((lib-name (string-append "logolib/macros/"
-				       (symbol->string name))))
+				       (if (symbol? name)
+					   (symbol->string name)
+					   name))))
 	  (cond ((file-exists? lib-name)
 		 (meta-load lib-name)
 		 (let ((lmacro (assoc name the-macros)))
