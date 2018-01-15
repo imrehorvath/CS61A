@@ -200,11 +200,6 @@
 (define (namep env var)
   (not (null? (lookup-variable-binding var env))))
 
-;;; Dispatch between Scheme's library procedure member and Simpy's
-
-(define (member-disp x stuff)
-  (cond ((pair? x) (member x stuff))
-	(else (member? x stuff))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
@@ -343,7 +338,9 @@
           (begin (eval-line (make-line-obj exp)
 			    the-global-environment) 
 		 (loader))))) 
-  (with-input-from-file (if (symbol? fn)
-			    (symbol->string fn)
-			    fn) loader)
+  (with-input-from-file
+      (if (word? fn)
+	  (word->string fn)
+	  fn)
+    loader)
   '=no-value=)

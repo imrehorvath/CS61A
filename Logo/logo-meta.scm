@@ -288,7 +288,7 @@
 (add-prim 'numberp 1 (logo-pred (make-logo-arith number?)))
 (add-prim 'listp 1 (logo-pred list?))
 (add-prim 'wordp 1 (logo-pred (lambda (x) (not (list? x)))))
-(add-prim 'memberp 2 (logo-pred (make-logo-arith member-disp)))
+(add-prim 'memberp 2 (logo-pred member?))
 
 (add-prim 'stop 0 (lambda () '=stop=))
 (add-prim 'output 1 (lambda (x) (cons '=output= x)))
@@ -336,8 +336,8 @@
 ;; (add-prim 'setbg 1 (pcmd setbg))
 ;; (add-prim 'setbackground 1 (pcmd setbg))
 
-(define exit-logo '())
-(define back-to-top-level '())
+(define exit-logo #f)
+(define back-to-top-level #f)
 
 (define the-global-environment '())
 (define the-procedures the-primitive-procedures)
@@ -538,8 +538,8 @@
     (if proc
 	proc
 	(let ((lib-name (string-append "logolib/procedures/"
-				       (if (symbol? name)
-					   (symbol->string name)
+				       (if (word? name)
+					   (word->string name)
 					   name))))
 	  (cond ((file-exists? lib-name)
 		 (meta-load lib-name)
@@ -550,16 +550,9 @@
 		(else #f))))))
 
 (define (add-compound name arg-count formals body)
-  (define (delete name procs)
-    (cond ((null? procs) '())
-	  ((eq? name (caar procs)) (cdr procs))
-	  (else (cons (car procs) (delete name (cdr procs))))))
-  (if (assoc name the-procedures)
-      (set! the-procedures
-	    (delete name the-procedures)))
   (set! the-procedures
 	(cons (list name 'compound arg-count (cons formals body))
-	      the-procedures)))
+	      (a-delete name the-procedures))))
 
 (define (procedure-name p)
   (car p))
@@ -590,8 +583,8 @@
     (if macro
 	macro
 	(let ((lib-name (string-append "logolib/macros/"
-				       (if (symbol? name)
-					   (symbol->string name)
+				       (if (word? name)
+					   (word->string name)
 					   name))))
 	  (cond ((file-exists? lib-name)
 		 (meta-load lib-name)
@@ -602,19 +595,21 @@
 		(else #f))))))
 
 (define (add-macro name arg-count formals body)
-  (define (delete name macros)
-    (cond ((null? macros) '())
-	  ((eq? name (caar macros)) (cdr macros))
-	  (else (cons (car macros) (delete name (cdr macros))))))
-  (if (assoc name the-macros)
-      (set! the-macros
-	    (delete name the-macros)))
   (set! the-macros
 	(cons (list name 'macro arg-count (cons formals body))
-	      the-macros)))
+	      (a-delete name the-macros))))
 
 (define (macro-name macro)
   (car macro))
+
+;;; Procedure, macro utility
+
+(define (a-delete name a-list)
+  (cond ((null? a-list) '())
+	((eq? name (caar a-list)) (cdr a-list))
+	(else (cons (car a-list)
+		    (a-delete name (cdr a-list))))))
+
 
 ;;; Section 4.1.3
 
