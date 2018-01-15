@@ -281,6 +281,7 @@
 
 (add-prim 'not 1 logo-not)
 (add-prim 'namep '(1) (logo-pred namep))
+(add-prim 'procedurep 1 (logo-pred procedurep))
 (add-prim 'equalp 2 (logo-pred (make-logo-arith equalp)))
 (add-prim 'lessp 2 (logo-pred (make-logo-arith <)))
 (add-prim 'greaterp 2 (logo-pred (make-logo-arith >)))

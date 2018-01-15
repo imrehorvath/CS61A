@@ -200,6 +200,10 @@
 (define (namep env var)
   (not (null? (lookup-variable-binding var env))))
 
+(define (procedurep name)
+  (if (assoc name the-procedures)
+      #t
+      #f))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
