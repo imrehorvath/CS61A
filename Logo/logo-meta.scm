@@ -341,7 +341,7 @@
 (define back-to-top-level #f)
 
 (define the-global-environment '())
-(define the-procedures the-primitive-procedures)
+(define the-procedures-table (make-table-from the-primitive-procedures))
 (define the-macros '())
 
 ;;; INITIALIZATION AND DRIVER LOOP
@@ -353,7 +353,7 @@
 
 (define (initialize-logo)
   (set! the-global-environment (extend-environment '() '() '()))
-  (set! the-procedures the-primitive-procedures)
+  (set! the-procedures-table (make-table-from the-primitive-procedures))
   (set! the-macros '())
   (driver-loop))
 
@@ -535,7 +535,7 @@
 ;;; procedures
 
 (define (lookup-procedure name)
-  (let ((proc (assoc name the-procedures)))
+  (let ((proc (lookup-record name the-procedures-table)))
     (if proc
 	proc
 	(let ((lib-name (string-append "logolib/procedures/"
@@ -544,16 +544,15 @@
 					   name))))
 	  (cond ((file-exists? lib-name)
 		 (meta-load lib-name)
-		 (let ((lproc (assoc name the-procedures)))
+		 (let ((lproc (lookup-record name the-procedures-table)))
 		   (if lproc
 		       lproc
 		       (logo-error "Library does not contain definition" name))))
 		(else #f))))))
 
 (define (add-compound name arg-count formals body)
-  (set! the-procedures
-	(cons (list name 'compound arg-count (cons formals body))
-	      (a-delete name the-procedures))))
+  (insert-record! (list name 'compound arg-count (cons formals body))
+		  the-procedures-table))
 
 (define (procedure-name p)
   (car p))
@@ -598,18 +597,10 @@
 (define (add-macro name arg-count formals body)
   (set! the-macros
 	(cons (list name 'macro arg-count (cons formals body))
-	      (a-delete name the-macros))))
+	      the-macros)))
 
 (define (macro-name macro)
   (car macro))
-
-;;; Procedure, macro utility
-
-(define (a-delete name a-list)
-  (cond ((null? a-list) '())
-	((eq? name (caar a-list)) (cdr a-list))
-	(else (cons (car a-list)
-		    (a-delete name (cdr a-list))))))
 
 
 ;;; Section 4.1.3
