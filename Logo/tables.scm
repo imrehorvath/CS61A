@@ -37,8 +37,8 @@
 
 (define (delete! key table)
   (define (loop this prev)
-    (cond ((null? this) 'none)
-	  ((equal? (caar this) key) (set-cdr! prev (cdr this)) 'done)
+    (cond ((null? this) 'not-in-table)
+	  ((equal? (caar this) key) (set-cdr! prev (cdr this)) 'ok)
 	  (else (loop (cdr this) this))))
   (loop (cdr table) table))
 
