@@ -34,7 +34,7 @@
 
 (define (variable? exp)
   (and (word? exp)
-       (eq? (string-ref (word->string exp) 0) #\:)))
+       (eqv? (string-ref (word->string exp) 0) #\:)))
 
 (define (variable-name exp)
   (bf exp))
@@ -514,7 +514,7 @@
 
 (define (quoted? exp)
   (or (list? exp)
-      (eq? (string-ref (word->string (first exp)) 0) #\")))
+      (eqv? (string-ref (word->string (first exp)) 0) #\")))
 
 (define (text-of-quotation exp)
   (if (list? exp)
