@@ -290,6 +290,12 @@
 (add-prim 'listp 1 (logo-pred list?))
 (add-prim 'wordp 1 (logo-pred (lambda (x) (not (list? x)))))
 (add-prim 'memberp 2 (logo-pred member?))
+(add-prim 'plistp 1 (logo-pred plistp))
+
+(add-prim 'pprop 3 pprop)
+(add-prim 'gprop 2 gprop)
+(add-prim 'remprop 2 remprop)
+(add-prim 'plist 1 plist)
 
 (add-prim 'stop 0 (lambda () '=stop=))
 (add-prim 'output 1 (lambda (x) (cons '=output= x)))
@@ -342,6 +348,7 @@
 
 (define the-global-environment '())
 (define the-procedures-table (make-table-from the-primitive-procedures))
+(define the-plists-table (make-table))
 (define the-macros '())
 
 ;;; INITIALIZATION AND DRIVER LOOP
@@ -354,6 +361,7 @@
 (define (initialize-logo)
   (set! the-global-environment (extend-environment '() '() '()))
   (set! the-procedures-table (make-table-from the-primitive-procedures))
+  (set! the-plists-table (make-table))
   (set! the-macros '())
   (driver-loop))
 

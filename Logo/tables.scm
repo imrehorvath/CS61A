@@ -42,3 +42,12 @@
 	  (else (loop (cdr this) this))))
   (loop (cdr table) table))
 
+(define (empty-table? table)
+  (null? (cdr table)))
+
+(define (table-keys table)
+  (reverse (map car (cdr table))))
+
+(define (table-values table)
+  (reverse (map cdr (cdr table))))
+

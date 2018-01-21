@@ -203,6 +203,51 @@
 (define (procedurep name)
   (lookup-record name the-procedures-table))
 
+(define (plistp name)
+  (lookup name the-plists-table))
+
+(define (pprop plistname propname value)
+  (let ((proplist (lookup plistname the-plists-table)))
+    (if proplist
+	(insert! propname value proplist)
+	(let ((proplist (make-table)))
+	  (insert! propname value proplist)
+	  (insert! plistname proplist the-plists-table))))
+  '=no-value=)
+
+(define (gprop plistname propname)
+  (let ((proplist (lookup plistname the-plists-table)))
+    (if (not proplist)
+	'()
+	(let ((record (lookup-record propname proplist)))
+	  (if (not record)
+	      '()
+	      (cdr record))))))
+
+(define (remprop plistname propname)
+  (let ((proplist (lookup plistname the-plists-table)))
+    (if proplist
+	(begin
+	  (delete! propname proplist)
+	  (if (empty-table? proplist)
+	      (delete! plistname the-plists-table)))))
+  '=no-value=)
+
+(define (plist plistname)
+  (let ((proplist (lookup plistname the-plists-table)))
+    (if (not proplist)
+	'()
+	(merge-lsts (table-keys proplist)
+		    (table-values proplist)))))
+
+(define (merge-lsts lst1 lst2)
+  (cond ((null? lst1) lst2)
+	((null? lst2) lst1)
+	(else (cons (car lst1)
+		    (cons (car lst2)
+			  (merge-lsts (cdr lst1)
+				      (cdr lst2)))))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;;  Stuff below here is needed for the interpreter to work but you  ;;;  
