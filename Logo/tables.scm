@@ -46,8 +46,16 @@
   (null? (cdr table)))
 
 (define (table-keys table)
-  (reverse (map car (cdr table))))
+  (define (loop records keys)
+    (cond ((null? records) keys)
+	  (else (loop (cdr records)
+		      (cons (caar records) keys)))))
+  (loop (cdr table) '()))
 
 (define (table-values table)
-  (reverse (map cdr (cdr table))))
+  (define (loop records values)
+    (cond ((null? records) values)
+	  (else (loop (cdr records)
+		      (cons (cdar records) values)))))
+  (loop (cdr table) '()))
 
