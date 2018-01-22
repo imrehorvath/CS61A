@@ -74,7 +74,7 @@
 ;; (define-macro (usual . args)
 ;; 	     `(ask dispatch 'send-usual-to-parent . ,args))
 
-;; Use the standardized macro definition syntax, instead of define-macro.
+;; Use define-syntax, instead of define-macro.
 
 (define-syntax usual (syntax-rules ()
 		       ((usual args ...)
@@ -102,7 +102,7 @@
 
 ;; (define-macro (define-class . body) (make-definitions body))
 
-;; Use the standardized macro definition syntax, instead of define-macro.
+;; Use define-syntax, instead of define-macro.
 
 (define-syntax define-class (syntax-rules ()
 			      ((define-class body ...)
