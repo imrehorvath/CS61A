@@ -248,6 +248,30 @@
 			  (merge-lsts (cdr lst1)
 				      (cdr lst2)))))))
 
+(define (logo-memberp x stuff)
+  (define (thing-in-list? thing lst)
+    (cond ((null? lst) 'false)
+	  ((equal? thing (car lst)) 'true)
+	  (else (thing-in-list? thing (cdr lst)))))
+  (define (letter-in-word? letter wd)
+    (define (loop chr str i)
+      (cond ((< i 0) 'false)
+	    ((char=? chr (string-ref str i)) 'true)
+	    (else (loop chr str (- i 1)))))
+    (if (not (word? letter))
+	(logo-error "Invalid first argument to memberp" letter)
+	(let ((small-str (word->string letter)))
+	  (if (not (= (string-length small-str) 1))
+	      (logo-error "Invalid first argument to memberp" letter)
+	      (let ((big-str (word->string wd)))
+		(loop (string-ref small-str 0)
+		      big-str
+		      (- (string-length big-str) 1)))))))
+  (cond ((empty? stuff) 'false)
+	((list? stuff) (thing-in-list? x stuff))
+	((word? stuff) (letter-in-word? x stuff))
+	(else (logo-error "Invalid second argument to memberp" stuff))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
 ;;;  Stuff below here is needed for the interpreter to work but you  ;;;  

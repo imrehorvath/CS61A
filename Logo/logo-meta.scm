@@ -289,7 +289,7 @@
 (add-prim 'numberp 1 (logo-pred (make-logo-arith number?)))
 (add-prim 'listp 1 (logo-pred list?))
 (add-prim 'wordp 1 (logo-pred (lambda (x) (not (list? x)))))
-(add-prim 'memberp 2 (logo-pred member?))
+(add-prim 'memberp 2 logo-memberp)
 (add-prim 'plistp 1 (logo-pred plistp))
 
 (add-prim 'pprop 3 pprop)
