@@ -54,10 +54,8 @@ buzz
 > if equalp last :word "s [op word :word "es]
 > output word :word "s
 > end
-? print plural "body
-bodies
-? print map "plural [book sky virus]
-books skies viruses
+? print map "plural [book body virus]
+books bodies viruses
 ? to pigl :word
 > if punctuationp last :word [op word pigl.real bl :word last :word]
 > op pigl.real :word
