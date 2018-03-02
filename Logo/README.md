@@ -6,7 +6,9 @@ This is a Logo interpreter written in Scheme. The language it implements is a su
 
 Most of the Logo code here are borrowed from-, or based on the amazing book series [Computer Science Logo Style 2nd Edition Volume 1-2 by Brian Harvey Mit Press](https://people.eecs.berkeley.edu/~bh/logo.html).
 
-The originally supplied code to this project was probably intended to be used with the UCB Scheme (A modified version of STk). My solution to this problem was working fine with STk and STKlos too. But when I switched to another scheme, I faced problems eg. with `define-macro` and the one argument `eval` -usage in the supplied code. To improve portability between scheme implementations, I made a few changes to these supplied codes. eg. in `obj.scm`. After these changes, the project runs on GNU Guile scheme. Note that the current version of Guile scheme uses `(force-output)` to flush the output port, and not `(flush-output-port)` as mentioned in R6RS and described in R7RS "small language". That's the reason my modified `logo.scm` uses `(force-output)` for now. This might be in need of change still, when switching to another scheme, or when Guile adapts the standard.
+The originally supplied code to this project was probably intended to be used with the UCB Scheme (A modified version of STk). My solution to this problem was working fine with STk and STKlos too. But when I switched to another scheme, I faced problems eg. with output flushing and the one argument `eval` -usage in the supplied code.
+
+To improve portability between scheme implementations, I made a few changes to these supplied codes. eg. in `obj.scm`. After these changes, the project runs on GNU Guile scheme. Note that the current version of Guile scheme uses `(force-output)` to flush the output port, and not `(flush-output-port)` as mentioned in R6RS and described in R7RS "small language". That's the reason my modified `logo.scm` uses `(force-output)` for now. This might be in need of change still, when switching to another scheme, or when Guile adapts the standard.
 
 ## Examples
 
