@@ -10,6 +10,8 @@ The originally supplied code to this project was probably intended to be used wi
 
 To improve portability between scheme implementations, I made a few changes to the supplied code. Now it should be easier to switch between scheme implementations in the future.
 
+Experimental online version of this interpreter can be found [here](https://imrehorvath.github.io/logo-in-the-browser/). The online version runs on Gambit and the UI is Ymacs. It's based on Marc Feeley's Gambit in emacs in the browser.
+
 ## Examples
 
 ```
