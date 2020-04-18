@@ -4,7 +4,7 @@ This is my solution to the [Programming Project "Logo Interpreter"](https://inst
 
 This is a Logo interpreter written in Scheme. The language it implements is a subset of the Berkeley Logo language. (Note that this implementation lacks the turtle graphics part of Logo and focuses on the symbolic computing part instead.)
 
-Most of the Logo code here are borrowed from-, or based on the amazing book series [Computer Science Logo Style 2nd Edition Volume 1-2 by Brian Harvey Mit Press](https://people.eecs.berkeley.edu/~bh/logo.html).
+Most of the Logo code here are borrowed from-, or based on the amazing book series [Computer Science Logo Style 2nd Edition Volume 1-2 by Brian Harvey MIT Press](https://people.eecs.berkeley.edu/~bh/logo.html).
 
 The originally supplied code to this project was probably intended to be used with UCB Scheme (A modified version of STk). My solution to this problem was working fine with STk and STKlos too. But when I switched to another scheme, I faced problems with output flushing and the one argument `eval` -usage.
 
