@@ -1,3 +1,5 @@
+;; -*- logo -*-
+
 to foreach :values :template [:template.number 1]
 if emptyp :values [stop]
 apply :template (list first :values)

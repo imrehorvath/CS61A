@@ -79,7 +79,8 @@
 ;; Eval procedure definitions with required and optional inputs
 
 (define (eval-definition line-obj)
-  (define def-no-args #f)
+  (define def-number-of-args #f)
+  (define rest-args-defined #f)
   (define (collect-formals)
     (define (collect-required)
       (if (ask line-obj 'empty?)
@@ -112,22 +113,25 @@
       (let ((formal (ask line-obj 'next)))
 	(cond ((number? formal)
 	       (ask line-obj 'put-back formal)
-	       (collect-def-no-args))
+	       (collect-def-number-of-args))
 	      ((and (list? formal)
 		    (not (null? formal))
 		    (variable? (car formal))
 		    (null? (cdr formal)))
+	       (set! rest-args-defined #t)
 	       (cons (list (variable-name (car formal)))
-		     (collect-def-no-args)))
+		     (collect-def-number-of-args)))
 	      (logo-error "Invalid input to procedure" formal))))
-    (define (collect-def-no-args)
+    (define (collect-def-number-of-args)
       (if (ask line-obj 'empty?)
 	  '()
 	  (let ((formal (ask line-obj 'next)))
 	    (cond ((not (ask line-obj 'empty?))
 		   (logo-error "Invalid input to procedure after" formal))
 		  ((number? formal)
-		   (set! def-no-args formal)
+		   (set! def-number-of-args (if rest-args-defined
+						(* -1 formal)
+						formal))
 		   '())
 		  (else (logo-error "Invalid input to procedure" formal))))))
     (collect-required))
@@ -162,8 +166,8 @@
 	      (else
 	       (let ((formals (collect-formals)))
 		 (let ((body (collect-body)))
-		   (let ((arg-count (if def-no-args
-					def-no-args
+		   (let ((arg-count (if def-number-of-args
+					def-number-of-args
 					(compute-arg-count formals))))
 		     (add-compound name arg-count formals body)
 		     '=no-value=))))))))
@@ -234,6 +238,7 @@
 (add-prim 'first 1 first)
 (add-prim 'butfirst 1 bf)
 (add-prim 'bf 1 bf)
+(add-prim ".setbf" 2 dsetbf)
 (add-prim 'last 1 last)
 (add-prim 'butlast 1 bl)
 (add-prim 'bl 1 bl)
@@ -278,6 +283,9 @@
 (add-prim 'ift '(1) iftrue)
 (add-prim 'iffalse '(1) iffalse)
 (add-prim 'iff '(1) iffalse)
+
+(add-prim 'and '(-2) logo-and)
+(add-prim 'or '(-2) logo-or)
 
 (add-prim 'not 1 logo-not)
 (add-prim 'namep '(1) (logo-pred namep))
@@ -434,38 +442,84 @@
 			     env)))
             (else
 	     (let ((proc (lookup-procedure token)))
-		     (if (not proc)
-			 (logo-error "I don't know how  to" token)
-			 (cond ((pair? (arg-count proc))
-				(logo-apply proc
-					    (cons env
-						  (collect-n-args (car (arg-count proc))
-								  line-obj
-								  env
-								  (procedure-name proc)))
-					    env))
-			       ((and (negative? (arg-count proc))
-				     (not paren-flag))
-				(logo-apply proc
-					    (collect-n-args (abs (arg-count proc))
-							    line-obj
-							    env
-							    (procedure-name proc))
-					    env))
-			       (paren-flag
-				(logo-apply proc
-					    (collect-n-args -1
-							    line-obj
-							    env
-							    (procedure-name proc))
-					    env))
-			       (else
-				(logo-apply proc
-					    (collect-n-args (arg-count proc)
-							    line-obj
-							    env
-							    (procedure-name proc))
-					    env)))))) )))
+	       (if (not proc)
+		   (logo-error "I don't know how  to" token)
+		   ;; +------------------+--------------+----------------+--------------+----------------+
+		   ;; |                  |      (2)     |      (-2)      |       2      |       -2       |
+		   ;; +------------------+--------------+----------------+--------------+----------------+
+		   ;; | PROC "A "B       | cons env,    | cons env,      | collect 2    | collect abs -2 |
+		   ;; |                  | collect 2    | collect abs -2 |              |                |
+		   ;; +------------------+--------------+----------------+--------------+----------------+
+		   ;; | (PROC "A "B ...) | cons env,    | cons env,      | collect any, | collect, any   |
+		   ;; |                  | collect any, | collect any    |    must be 2 |                |
+		   ;; |                  |    must be 2 |                |              |                |
+		   ;; +------------------+--------------+----------------+--------------+----------------+
+		   (cond ((pair? (arg-count proc))
+			  (cond ((negative? (car (arg-count proc)))
+				 (if (not paren-flag)
+				     (logo-apply proc
+						 (cons env
+						       (collect-n-args (abs (car (arg-count proc)))
+								       line-obj
+								       env
+								       (procedure-name proc)))
+						 env)
+				     (logo-apply proc
+						 (cons env
+						       (collect-n-args -1
+								       line-obj
+								       env
+								       (procedure-name proc)))
+						 env)))
+				(else
+				 (if (not paren-flag)
+				     (logo-apply proc
+						 (cons env
+						       (collect-n-args (car (arg-count proc))
+								       line-obj
+								       env
+								       (procedure-name proc)))
+						 env)
+				     (let ((collected-args (collect-n-args -1
+									   line-obj
+									   env
+									   (procedure-name proc))))
+				       (if (= (length collected-args)
+					      (car (arg-count proc)))
+					   (logo-apply proc (cons env collected-args) env)
+					   (logo-error "Wrong number of arguments, should be:" (car (arg-count proc)))))))))
+			 (else
+			  (cond ((negative? (arg-count proc))
+				 (if (not paren-flag)
+				     (logo-apply proc
+						 (collect-n-args (abs (arg-count proc))
+								 line-obj
+								 env
+								 (procedure-name proc))
+						 env)
+				     (logo-apply proc
+						 (collect-n-args -1
+								 line-obj
+								 env
+								 (procedure-name proc))
+						 env)))
+				(else
+				 (if (not paren-flag)
+				     (logo-apply proc
+						 (collect-n-args (arg-count proc)
+								 line-obj
+								 env
+								 (procedure-name proc))
+						 env)
+				     (let ((collected-args (collect-n-args -1
+									   line-obj
+									   env
+									   (procedure-name proc))))
+				       (if (= (length collected-args)
+					      (arg-count proc))
+					   (logo-apply proc collected-args env)
+					   (logo-error "Wrong number of arguments, should be:" (arg-count proc)))))))))))) )))
+  
   (eval-helper #f))
 
 (define (macro-call? token)

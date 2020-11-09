@@ -1,24 +1,18 @@
-to h.good.enufp
+;; Heron's method to calculate square roots. -*- logo -*-
+
+to heron.good.enufp
 op lessp abs difference square :guess :x .001
 end
 
-to h.improve.guess
+to heron.improve.guess
 op average :guess quotient :x :guess
 end
 
-to h.sqrt.iter :guess
-if h.good.enufp [op :guess]
-op h.sqrt.iter h.improve.guess
+to heron.sqrt.iter :guess
+if heron.good.enufp [op :guess]
+op heron.sqrt.iter heron.improve.guess
 end
 
 to heron.sqrt :x
-op h.sqrt.iter 1.
-end
-
-to average :x :y
-op quotient sum :x :y 2.
-end
-
-to square :x
-op product :x :x
+op heron.sqrt.iter 1.
 end

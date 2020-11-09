@@ -1,0 +1,6 @@
+;; -*- logo -*-
+
+to quoted :stuff
+if wordp :stuff [output word "" :stuff]
+output :stuff
+end

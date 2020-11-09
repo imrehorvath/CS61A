@@ -1,3 +1,5 @@
+;; -*- logo -*-
+
 to max :a :b
-output ifelse :a > :b [:a] [:b]
+op ifelse :a > :b [:a] [:b]
 end

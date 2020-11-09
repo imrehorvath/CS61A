@@ -1,3 +1,5 @@
+;; -*- logo -*-
+
 to reduce :template :values
 if emptyp bf :values [output first :values]
 output apply :template (list (first :values) ~

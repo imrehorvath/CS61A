@@ -1,0 +1,5 @@
+;; -*- logo -*-
+
+to zerop :number
+op equalp :number 0
+end

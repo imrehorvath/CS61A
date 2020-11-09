@@ -1,0 +1,80 @@
+;; -*- logo -*-
+
+;; Stream constructor and selectors
+
+to stream :car :delayed.cdr
+output fput :car (list "_delayed_ :delayed.cdr)
+end
+
+to stream.head :stream
+output first :stream
+end
+
+to stream.tail :stream
+if emptyp bf :stream [output []]
+if not equalp first bf :stream "_delayed_ [output bf :stream]
+localmake "result run last :stream
+.setbf :stream :result
+output :result
+end
+
+;; Functions of streams
+
+to stream.ref :stream :num
+if equalp :num 1 [output stream.head :stream]
+output stream.ref stream.tail :stream :num-1
+end
+
+to stream.map :fun :stream
+if emptyp :stream [output []]
+output stream apply :fun (list stream.head :stream) ~
+              `[stream.map ,[quoted :fun] stream.tail ,[:stream]]
+end
+
+to stream.enumerate.interval :low :high
+if greaterp :low :high [output []]
+output stream :low ~
+              `[stream.enumerate.interval ,[:low+1] ,[:high]]
+end
+
+to stream.filter :fun :stream
+if emptyp :stream [output []]
+if apply :fun (list stream.head :stream) ~
+   [output stream stream.head :stream ~
+                  `[stream.filter ,[quoted :fun] stream.tail ,[:stream]]
+output stream.filter :fun stream.tail :stream
+end
+
+to show.stream :stream [:num 10]
+show force.stream :stream :num
+end
+
+to force.stream :stream :num
+if emptyp :stream [output []]
+if zerop :num [output [...]]
+output fput stream.head :stream ~
+            (force.stream stream.tail :stream :num-1)
+end
+
+;; Pre-defined streams
+
+to integers.from :n
+output stream :n `[integers.from ,[:n+1]]
+end
+
+make "integers integers.from 1
+
+to fib.gen :a :b
+output stream :a `[fib.gen ,[:b] ,[:a+:b]]
+end
+
+make "fibs fib.gen 0 1
+
+to sieve :stream
+output stream stream.head :stream ~
+              `[sieve stream.filter [not divisiblep ? ,[stream.head :stream]] ~
+                                    stream.tail ,[:stream]]
+end
+
+make "primes sieve stream.tail :integers
+

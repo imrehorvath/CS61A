@@ -1,3 +1,5 @@
+;; -*- logo -*-
+
 to map.append :template :values [:template.number 1]
 if emptyp :values [output []]
 output append (apply :template (list first :values)) ~

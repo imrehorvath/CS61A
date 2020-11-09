@@ -132,6 +132,30 @@
 		    env))
         (else (logo-error "Input to iflese not true or false" t/f))))
 
+;;; AND
+
+(define (logo-and env . exps)
+  (cond ((null? exps) 'true)
+	((eq? (car exps) 'false) 'false)
+	((eq? (car exps) 'true) (apply logo-and (cons env (cdr exps))))
+	((list? (car exps))
+	 (let ((result (eval-line (make-line-obj (car exps)) env)))
+	   (cond ((eq? result 'false) 'false)
+		 (else (apply logo-and (cons env (cdr exps)))))))
+	(else (logo-error "AND called with invalid argument" (car exps)))))
+
+;; OR
+
+(define (logo-or env . exps)
+  (cond ((null? exps) 'false)
+	((eq? (car exps) 'true) 'true)
+	((eq? (car exps) 'false) (apply logo-or (cons env (cdr exps))))
+	((list? (car exps))
+	 (let ((result (eval-line (make-line-obj (car exps)) env)))
+	   (cond ((eq? result 'true) 'true)
+		 (else (apply logo-or (cons env (cdr exps)))))))
+	(else (logo-error "OR called with invalid argument" (car exps)))))
+
 ;;; Problem B8   TEST, IFTRUE and IFFALSE
 
 (define (test env t/f)
@@ -271,6 +295,11 @@
 			  (merge-lsts (cdr lst1)
 				      (cdr lst2)))))))
 
+;;; Destructive Commands
+
+(define (dsetbf lst value)
+  (set-cdr! lst value)
+  '=no-value=)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 

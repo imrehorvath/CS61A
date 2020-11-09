@@ -1,3 +1,5 @@
+;; -*- logo -*-
+
 to map.tree :template :tree
 if wordp :tree [output apply :template (list :tree)]
 if emptyp :tree [output []]

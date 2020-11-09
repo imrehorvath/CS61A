@@ -1,0 +1,38 @@
+show sum 1 2
+show (sum 1 2)
+show (sum 1 2 3 4 5)
+show 1 + 2 + 3 + 4 + 5
+show (sum 1)
+show (sum)
+
+show product 1 2
+show (product 1 2)
+show (product 1 2 3 4 5)
+show 1 * 2 * 3 * 4 * 5
+show (product 1)
+show (product)
+
+show average 1 5
+show (average 1 2 3 4 5)
+
+show pick [1 2 3 4 5]
+
+print [Please enter your year of birth!]
+make "birth.year first readlist
+print `[I am ,[2020-:birth.year] years old.]
+
+show map [?*?] [1 2 3 4 5]
+show map "square [1 2 3 4 5]
+
+show filter [?>2] [1 2 3 4 5]
+show filter "oddp [1 2 3 4 5]
+
+load "streams
+show.stream :integers
+make "squares stream.map "square :integers
+show.stream :squares
+make "odd.integers stream.filter "oddp :integers
+show.stream :odd.integers
+show.stream :fibs
+show stream.ref :fibs 10
+show.stream :primes

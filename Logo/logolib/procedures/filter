@@ -1,3 +1,5 @@
+;; -*- logo -*-
+
 to filter :template :values [:template.number 1]
 if emptyp :values [output :values]
 if apply :template (list first :values) ~

@@ -1,4 +1,4 @@
-;; This example was borrowed from:
+;; This example was borrowed from: -*- logo -*-
 ;; https://people.eecs.berkeley.edu/~bh/logo-sample.html
 
 to choices :menu [:sofar []]
