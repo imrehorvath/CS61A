@@ -17,6 +17,9 @@ show (average 1 2 3 4 5)
 
 show pick [1 2 3 4 5]
 
+show fact 5
+show choose 90 5
+
 print [Please enter your year of birth!]
 make "birth.year first readlist
 print `[I am ,[2020-:birth.year] years old.]
