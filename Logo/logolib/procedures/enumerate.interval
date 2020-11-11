@@ -1,0 +1,6 @@
+;; -*- logo -*-
+
+to enumerate.interval :from :to
+if :from > :to [output []]
+output fput :from enumerate.interval :from+1 :to
+end
