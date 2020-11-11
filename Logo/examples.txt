@@ -1,12 +1,10 @@
 show sum 1 2
-show (sum 1 2)
 show (sum 1 2 3 4 5)
 show 1 + 2 + 3 + 4 + 5
 show (sum 1)
 show (sum)
 
 show product 1 2
-show (product 1 2)
 show (product 1 2 3 4 5)
 show 1 * 2 * 3 * 4 * 5
 show (product 1)
@@ -19,6 +17,9 @@ show pick [1 2 3 4 5]
 
 show fact 5
 show choose 90 5
+
+show apply "sum enumerate.interval 1 100
+show map "square enumerate.interval 1 20
 
 print [Please enter your year of birth!]
 make "birth.year first readlist
