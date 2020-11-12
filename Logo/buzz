@@ -1,11 +1,7 @@
-;; The Buzz Game -*- logo -*-
-;; Say Buzz when the number is a multiple of 7 or contains the digit 7.
-;; Say the number itself otherwise.
+;; -*- logo -*-
 
 to buzz :number
-if equalp remainder :number 7 0 [print "BUZZ stop]
-if memberp 7 :number [print "BUZZ stop]
+if divisiblep :number 7 [print "buzz stop]
+if memberp 7 :number [print "buzz stop]
 print :number
 end
-
-foreach [1 7 14 19] "buzz

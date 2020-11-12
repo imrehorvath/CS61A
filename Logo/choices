@@ -1,5 +1,6 @@
-;; This example was borrowed from: -*- logo -*-
-;; https://people.eecs.berkeley.edu/~bh/logo-sample.html
+;; -*- logo -*-
+
+;; Borrowed from: https://people.eecs.berkeley.edu/~bh/logo-sample.html
 
 to choices :menu [:sofar []]
 if emptyp :menu [print :sofar stop]

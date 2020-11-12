@@ -1,4 +1,4 @@
-;; Heron's method to calculate square roots. -*- logo -*-
+;; -*- logo -*-
 
 to heron.good.enufp
 op lessp abs difference square :guess :x .001

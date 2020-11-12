@@ -18,18 +18,21 @@ show pick [1 2 3 4 5]
 show fact 5
 show choose 90 5
 
-show apply "sum enumerate.interval 1 100
-show map "square enumerate.interval 1 20
-
 print [Please enter your year of birth!]
 make "birth.year first readlist
 print `[I am ,[2020-:birth.year] years old.]
+
+load "buzz
+foreach [1 7 14 19] "buzz
 
 show map [?*?] [1 2 3 4 5]
 show map "square [1 2 3 4 5]
 
 show filter [?>2] [1 2 3 4 5]
 show filter "oddp [1 2 3 4 5]
+
+show apply "sum enumerate.interval 1 100
+show map "square enumerate.interval 1 20
 
 load "streams
 show.stream :integers
