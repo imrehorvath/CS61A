@@ -1,0 +1,5 @@
+;; -*- logo -*-
+
+to sum.interval :low :high
+op (:low+:high)*(:high-:low+1)/2
+end
