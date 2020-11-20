@@ -45,6 +45,12 @@ if apply :fun (list stream.head :stream) ~
 output stream.filter :fun stream.tail :stream
 end
 
+to stream.reduce :fun :stream
+if emptyp stream.tail :stream [output stream.head :stream]
+output apply :fun (list stream.head :stream ~
+                        stream.reduce :fun stream.tail :stream)
+end
+
 to show.stream :stream [:num 10]
 show force.stream :stream :num
 end
