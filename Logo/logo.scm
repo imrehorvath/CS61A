@@ -430,17 +430,20 @@
   (if (eq? (current-input-port) tty-port)
   (begin (display string) (force-output))))  
 
-(define (meta-load fn)   
-  (define (loader)  
+(define (meta-load fn)
+  (define file-name (if (word? fn)
+			(word->string fn)
+			fn))
+  (define (loader)
     (let ((exp (logo-read)))   
       (if (eof-object? exp)   
           '() 
           (begin (eval-line (make-line-obj exp)
 			    the-global-environment) 
-		 (loader))))) 
-  (with-input-from-file
-      (if (word? fn)
-	  (word->string fn)
-	  fn)
-    loader)
+		 (loader)))))
+  (define (handler exc)
+    (logo-error "Couldn't load file" file-name))
+  (with-exception-handler
+   handler
+   (lambda () (with-input-from-file file-name loader)))
   '=no-value=)
