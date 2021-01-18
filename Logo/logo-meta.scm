@@ -157,7 +157,9 @@
       (if (= req
 	     (length formals))
 	  req
-	  (- req))))
+	  (if (> req 0)
+	      (- req)
+	      -0.1))))
   (if (ask line-obj 'empty?)
       (logo-error "Empty procedure definition")
       (let ((name (ask line-obj 'next)))
@@ -459,7 +461,7 @@
 				 (if (not paren-flag)
 				     (logo-apply proc
 						 (cons env
-						       (collect-n-args (abs (car (arg-count proc)))
+						       (collect-n-args (abs (round (car (arg-count proc))))
 								       line-obj
 								       env
 								       (procedure-name proc)))
@@ -492,7 +494,7 @@
 			  (cond ((negative? (arg-count proc))
 				 (if (not paren-flag)
 				     (logo-apply proc
-						 (collect-n-args (abs (arg-count proc))
+						 (collect-n-args (abs (round (arg-count proc)))
 								 line-obj
 								 env
 								 (procedure-name proc))
