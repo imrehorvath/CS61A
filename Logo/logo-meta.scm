@@ -543,7 +543,7 @@
         ((compound-procedure? procedure)
 	 (eval-sequence
 	  (procedure-body procedure)
-	  (extend-environment-for-proc-application
+	  (extend-environment
 	   (procedure-parameters procedure)
 	   arguments
 	   env)))
@@ -686,14 +686,14 @@
   (set-car! frame (cons var (car frame)))
   (set-cdr! frame (cons val (cdr frame))))
 
-(define (extend-environment vars vals base-env)
-  (if (= (length vars) (length vals))
-      (cons (make-frame vars vals) base-env)
-      (if (< (length vars) (length vals))
-          (logo-error "Too many arguments supplied" vars vals)
-          (logo-error "Too few arguments supplied" vars vals))))
+;; (define (extend-environment vars vals base-env)
+;;   (if (= (length vars) (length vals))
+;;       (cons (make-frame vars vals) base-env)
+;;       (if (< (length vars) (length vals))
+;;           (logo-error "Too many arguments supplied" vars vals)
+;;           (logo-error "Too few arguments supplied" vars vals))))
 
-(define (extend-environment-for-proc-application vars vals base-env)
+(define (extend-environment vars vals base-env)
   (let ((env (cons (make-frame '() '())
 		   base-env)))
     (let ((frame (first-frame env)))
