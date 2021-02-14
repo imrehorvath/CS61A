@@ -40,40 +40,6 @@
   (bf exp))
 
 
-;;; Problem A5   handle-infix
-
-(define infix-oper-proc-alist '((+ . sum)
-				(- . difference)
-				(* . product)
-				(/ . quotient)
-				(% . remainder)
-				(= . equalp)
-				(< . lessp)
-				(> . greaterp)))
-
-(define (de-infix token)
-  (cdr (assoc token infix-oper-proc-alist)))
-
-(define (infix-operator? token)
-  (assoc token infix-oper-proc-alist))
-
-(define (handle-infix value line-obj env)
-  (if (ask line-obj 'empty?)
-      value
-      (let ((token (ask line-obj 'next)))
-	(cond ((infix-operator? token)
-	       (handle-infix
-		(logo-apply
-		 (lookup-procedure (de-infix token))
-		 (list value (eval-prefix line-obj env))
-		 env)
-		line-obj
-		env))
-	      (else
-	       (ask line-obj 'put-back token)
-	       value)))))
-
-
 ;;; Problem B5    eval-definition
 
 ;; Eval procedure definitions with required and optional inputs
@@ -407,13 +373,93 @@
 
 ;;; Section 4.1.1
 
-;; Given an expression like (proc :a :b :c)+5
-;; logo-eval calls eval-prefix for the part in parentheses, and then
-;; handle-infix to check for and process the infix arithmetic.
-;; Eval-prefix is comparable to Scheme's eval.
+
+;;; Problem A5   handle-infix
+
+;; Below solution is influenced by the infix arithmetix-
+;; expression parsing example found in Simply Scheme by Brian Harvey MIT Press.
+
+;; infix-opers: (operator, procedure-name, precedence)
+
+(define infix-opers '((+ sum 2)
+		      (- difference 2)
+		      (* product 3)
+		      (/ quotient 3)
+		      (% remainder 3)
+		      (= equalp 1)
+		      (< lessp 1)
+		      (> greaterp 1)))
+
+(define (infix-operator? oper)
+  (assoc oper infix-opers))
+
+(define (de-infix oper)
+  (cadr (assoc oper infix-opers)))
+
+(define (precedence oper)
+  (caddr (assoc oper infix-opers)))
+
+(define make-node cons)
+(define datum car)
+(define children cdr)
+
+;; logo-eval: (proc :a :b :c)[+5]*
+;; eg.: (proc :a :b)+5*9
+;;              +
+;;            /   \
+;; (proc :a :b)    *
+;;                /  \
+;;               5    9
 
 (define (logo-eval line-obj env)
-  (handle-infix (eval-prefix line-obj env) line-obj env))
+  (compute-infix (parse-infix (eval-prefix line-obj env)
+			      line-obj
+			      env)
+		 env))
+
+(define (parse-infix value line-obj env)
+  (parse-infix-helper line-obj env (list (make-node value '())) '()))
+
+(define (parse-infix-helper line-obj env operands operators)
+  (if (ask line-obj 'empty?)
+      (if (null? operators)
+	  (car operands)
+	  (handle-operator line-obj env operands operators))
+      (let ((token (ask line-obj 'next)))
+	(cond ((infix-operator? token)
+	       (if (ask line-obj 'empty?)
+		   (logo-error "rhs of infix operator missing" token)
+		   (if (or (null? operators)
+			   (> (precedence token)
+			      (precedence (car operators))))
+		       (parse-infix-helper line-obj
+					   env
+					   (cons (make-node (eval-prefix line-obj env)
+							    '())
+						 operands)
+					   (cons token operators))
+		       (begin (ask line-obj 'put-back token)
+			      (handle-operator line-obj env operands operators)))))
+	      (else (ask line-obj 'put-back token)
+		    (if (null? operators)
+			(car operands)
+			(handle-operator line-obj env operands operators)))))))
+
+(define (handle-operator line-obj env operands operators)
+  (parse-infix-helper line-obj
+		      env
+		      (cons (make-node (car operators)
+				       (list (cadr operands) (car operands)))
+			    (cddr operands))
+		      (cdr operators)))
+
+(define (compute-infix tree env)
+  (if (infix-operator? (datum tree))
+      (logo-apply (lookup-procedure (de-infix (datum tree)))
+		  (list (compute-infix (car (children tree)) env)
+			(compute-infix (cadr (children tree)) env))
+		  env)
+      (datum tree)))
 
 (define (eval-prefix line-obj env)
   (define (eval-helper paren-flag)
@@ -425,9 +471,10 @@
             ((procedure-definition? token) (eval-definition line-obj))
 	    ((macro-definition? token) (eval-macro-definition line-obj))
 	    ((left-paren? token)
-	     (let ((result (handle-infix (eval-helper #t)
-				       	 line-obj
-				       	 env)))
+	     (let ((result (compute-infix (parse-infix (eval-helper #t)
+				       		       line-obj
+				       		       env)
+					  env)))
 	       (let ((token (ask line-obj 'next)))
 	       	 (if (right-paren? token)
 		     result
@@ -523,6 +570,7 @@
 					   (logo-error "Wrong number of arguments, should be:" (arg-count proc)))))))))))) )))
   
   (eval-helper #f))
+
 
 (define (macro-call? token)
   (lookup-macro token))

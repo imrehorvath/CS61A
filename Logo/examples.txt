@@ -1,14 +1,6 @@
 show sum 1 2
 show (sum 1 2 3 4 5)
-show 1 + 2 + 3 + 4 + 5
-show (sum 1)
-show (sum)
-
-show product 1 2
-show (product 1 2 3 4 5)
-show 1 * 2 * 3 * 4 * 5
-show (product 1)
-show (product)
+show 1 + 2 * 3
 
 show average 1 5
 show (average 1 2 3 4 5)
