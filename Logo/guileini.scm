@@ -1,6 +1,6 @@
 ;; Use this initialization to run the project in Guile Scheme!
 
-(display ";; This Logo interpeter implements a subset of UCBLogo, minus the turtle graphics.\n;; v1.0 2020, imi [dot] horvath [at] gmail [dot] com\n;; Library and examples taken from Berkeley Logo.\n;; This is the Guile Scheme-specific initialization.")
+(display ";; This Logo interpeter implements a subset of UCBLogo, minus the turtle graphics.\n;; v1.1 2021, imi [dot] horvath [at] gmail [dot] com\n;; Library and examples taken from Berkeley Logo.\n;; This is the Guile Scheme-specific initialization.")
 (newline)
 
 ;; Guile Scheme-specific initialization
