@@ -1,4 +1,4 @@
-# Project 3: Adventure Game
+# Project #3: Adventure Game
 
 This is my solution to the Object Oriented Programming Project "Adventure Game".
 
