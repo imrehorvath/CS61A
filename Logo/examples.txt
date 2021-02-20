@@ -1,21 +1,16 @@
-show sum 1 2
-show (sum 1 2 3 4 5)
-show 1 + 2 * 3
-
-show average 1 5
-show (average 1 2 3 4 5)
+show sum 1 product 2 3
+show 1+2*3
 
 show pick [1 2 3 4 5]
 
 show fact 5
 show choose 90 5
 
+print [Please enter the current year!]
+make "current.year first readlist
 print [Please enter your year of birth!]
 make "birth.year first readlist
-print `[I am ,[2020-:birth.year] years old.]
-
-load "buzz
-foreach [1 7 14 19] "buzz
+print `[I am ,[:current.year-:birth.year] years old this year.]
 
 show map [?*?] [1 2 3 4 5]
 show map "square [1 2 3 4 5]
@@ -23,15 +18,17 @@ show map "square [1 2 3 4 5]
 show filter [?>2] [1 2 3 4 5]
 show filter "oddp [1 2 3 4 5]
 
+show reduce [?1+?2] enumerate.interval 1 100
 show apply "sum enumerate.interval 1 100
-show map "square enumerate.interval 1 20
 
 load "streams
 show.stream :integers
+
 make "squares stream.map "square :integers
 show.stream :squares
+
 make "odd.integers stream.filter "oddp :integers
 show.stream :odd.integers
-show.stream :fibs
-show stream.ref :fibs 10
-show.stream :primes
+
+make "buzzes stream.map [ifelse or divisiblep ? 7 memberp 7 ? ["buzz] [?]] :integers
+(show.stream :buzzes 50)
