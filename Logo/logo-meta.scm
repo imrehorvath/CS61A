@@ -376,8 +376,8 @@
 
 ;;; Problem A5   handle-infix
 
-;; Below solution is influenced by the infix arithmetix-
-;; expression parsing example found in Simply Scheme by Brian Harvey MIT Press.
+;; Below solution is inspired by the infix arithmetix-expression parsing
+;; example found in the book Simply Scheme by Brian Harvey and Matthew Wright MIT Press.
 
 ;; infix-opers: (operator, procedure-name, precedence)
 
