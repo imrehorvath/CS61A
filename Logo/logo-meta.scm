@@ -276,7 +276,7 @@
 (add-prim 'output 1 (lambda (x) (cons '=output= x)))
 (add-prim 'op 1 (lambda (x) (cons '=output= x)))
 
-(add-prim 'load 1 meta-load)
+(add-prim 'load 1 logo-load)
 (add-prim 'bye 0 (lambda () (exit-logo)))
 
 ;; (define (pcmd proc) (lambda args (apply proc args) '=no-value=))
@@ -654,7 +654,7 @@
 					   (word->string name)
 					   name))))
 	  (cond ((file-exists? lib-name)
-		 (meta-load lib-name)
+		 (logo-load lib-name)
 		 (let ((lproc (lookup-record name the-procedures-table)))
 		   (if lproc
 		       lproc
@@ -698,7 +698,7 @@
 					   (word->string name)
 					   name))))
 	  (cond ((file-exists? lib-name)
-		 (meta-load lib-name)
+		 (logo-load lib-name)
 		 (let ((lmacro (assoc name the-macros)))
 		   (if lmacro
 		       lmacro

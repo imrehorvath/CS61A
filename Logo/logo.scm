@@ -430,7 +430,7 @@
   (if (eq? (current-input-port) tty-port)
   (begin (display string) (force-output))))  
 
-(define (meta-load fn)
+(define (logo-load fn)
   (define file-name (if (word? fn)
 			(word->string fn)
 			fn))
