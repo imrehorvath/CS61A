@@ -28,7 +28,7 @@
   (assoc key (cdr table)))
 
 (define (insert-record! a-record table)
-  (let ((record (assoc (car a-record) (cdr table))))
+  (let ((record (lookup-record (car a-record) table)))
     (if record
 	(set-cdr! record (cdr a-record))
 	(set-cdr! table
