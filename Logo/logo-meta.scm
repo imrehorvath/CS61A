@@ -379,7 +379,7 @@
 ;; Below solution is inspired by the infix arithmetix-expression parsing
 ;; example found in the book Simply Scheme by Brian Harvey and Matthew Wright MIT Press.
 
-;; infix-opers: (operator, procedure-name, precedence)
+;; infix-opers: (operator procedure-name precedence)
 
 (define infix-opers '((+ sum 2)
 		      (- difference 2)
@@ -492,17 +492,18 @@
             (else
 	     (let ((proc (lookup-procedure token)))
 	       (if (not proc)
-		   (logo-error "I don't know how  to" token)
-		   ;; +------------------+--------------+----------------+--------------+----------------+
-		   ;; |                  |      (2)     |      (-2)      |       2      |       -2       |
-		   ;; +------------------+--------------+----------------+--------------+----------------+
-		   ;; | PROC "A "B       | cons env,    | cons env,      | collect 2    | collect abs -2 |
-		   ;; |                  | collect 2    | collect abs -2 |              |                |
-		   ;; +------------------+--------------+----------------+--------------+----------------+
-		   ;; | (PROC "A "B ...) | cons env,    | cons env,      | collect any, | collect, any   |
-		   ;; |                  | collect any, | collect any    |    must be 2 |                |
-		   ;; |                  |    must be 2 |                |              |                |
-		   ;; +------------------+--------------+----------------+--------------+----------------+
+		   (logo-error "I don't know how to" token)
+		   ;; +------+--------------------------+----------------------------------+
+		   ;; |      | PROC "A "B ...           | (PROC "A "B ...)                 |
+		   ;; +------+--------------------------+----------------------------------+
+		   ;; |  (2) | cons env, collect 2      | cons env, collect any, must be 2 |
+		   ;; +------+--------------------------+----------------------------------+
+		   ;; | (-2) | cons env, collect abs -2 | cons env, collect any            |
+		   ;; +------+--------------------------+----------------------------------+
+		   ;; |   2  | collect 2                | collect any, must be 2           |
+		   ;; +------+--------------------------+----------------------------------+
+		   ;; |  -2  | collect abs -2           | collect any                      |
+		   ;; +------+--------------------------+----------------------------------+
 		   (cond ((pair? (arg-count proc))
 			  (cond ((negative? (car (arg-count proc)))
 				 (if (not paren-flag)
