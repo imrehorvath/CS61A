@@ -489,89 +489,45 @@
 					     env
 					     (macro-name macro))
 			     env)))
-            (else
+            (else  ;; procedure application
 	     (let ((proc (lookup-procedure token)))
 	       (if (not proc)
 		   (logo-error "I don't know how to" token)
-		   ;; +------+--------------------------+----------------------------------+
-		   ;; |      | PROC "A "B ...           | (PROC "A "B ...)                 |
-		   ;; +------+--------------------------+----------------------------------+
-		   ;; |  (2) | cons env, collect 2      | cons env, collect any, must be 2 |
-		   ;; +------+--------------------------+----------------------------------+
-		   ;; | (-2) | cons env, collect abs -2 | cons env, collect any            |
-		   ;; +------+--------------------------+----------------------------------+
-		   ;; |   2  | collect 2                | collect any, must be 2           |
-		   ;; +------+--------------------------+----------------------------------+
-		   ;; |  -2  | collect abs -2           | collect any                      |
-		   ;; +------+--------------------------+----------------------------------+
-		   (cond ((pair? (arg-count proc))
-			  (cond ((negative? (car (arg-count proc)))
-				 (if (not paren-flag)
-				     (logo-apply proc
-						 (cons env
-						       (collect-n-args (abs (round (car (arg-count proc))))
-								       line-obj
-								       env
-								       (procedure-name proc)))
-						 env)
-				     (logo-apply proc
-						 (cons env
-						       (collect-n-args -1
-								       line-obj
-								       env
-								       (procedure-name proc)))
-						 env)))
-				(else
-				 (if (not paren-flag)
-				     (logo-apply proc
-						 (cons env
-						       (collect-n-args (car (arg-count proc))
-								       line-obj
-								       env
-								       (procedure-name proc)))
-						 env)
-				     (let ((collected-args (collect-n-args -1
-									   line-obj
-									   env
-									   (procedure-name proc))))
-				       (if (= (length collected-args)
-					      (car (arg-count proc)))
-					   (logo-apply proc (cons env collected-args) env)
-					   (logo-error "Wrong number of arguments, should be:" (car (arg-count proc)))))))))
-			 (else
-			  (cond ((negative? (arg-count proc))
-				 (if (not paren-flag)
-				     (logo-apply proc
-						 (collect-n-args (abs (round (arg-count proc)))
-								 line-obj
-								 env
-								 (procedure-name proc))
-						 env)
-				     (logo-apply proc
-						 (collect-n-args -1
-								 line-obj
-								 env
-								 (procedure-name proc))
-						 env)))
-				(else
-				 (if (not paren-flag)
-				     (logo-apply proc
-						 (collect-n-args (arg-count proc)
-								 line-obj
-								 env
-								 (procedure-name proc))
-						 env)
-				     (let ((collected-args (collect-n-args -1
-									   line-obj
-									   env
-									   (procedure-name proc))))
-				       (if (= (length collected-args)
-					      (arg-count proc))
-					   (logo-apply proc collected-args env)
-					   (logo-error "Wrong number of arguments, should be:" (arg-count proc)))))))))))) )))
+		   (let* ((env-proc? (pair? (arg-count proc)))
+			  (arg-cnt (if env-proc?
+				       (car (arg-count proc))
+				       (arg-count proc)))
+			  (n (if paren-flag
+				 -1
+				 (if (negative? arg-cnt)
+				     (abs (round arg-cnt))
+				     arg-cnt)))
+			  (collected-args (collect-n-args n
+							  line-obj
+							  env
+							  (procedure-name proc)))
+			  (assembled-args (if env-proc?
+					      (cons env collected-args)
+					      collected-args)))
+		     (if (and paren-flag
+			      (positive? arg-cnt)
+			      (not (= (length collected-args) arg-cnt)))
+			 (logo-error "Wrong number of arguments, should be:" arg-cnt))
+		     (logo-apply proc assembled-args env))))) )))
   
   (eval-helper #f))
 
+;; +------+--------------------------------+----------------------------------+
+;; |      | PROC "A "B ...                 | (PROC "A "B ...)                 |
+;; +------+--------------------------------+----------------------------------+
+;; |  (2) | cons env, collect 2            | cons env, collect any, must be 2 |
+;; +------+--------------------------------+----------------------------------+
+;; | (-2) | cons env, collect abs round -2 | cons env, collect any            |
+;; +------+--------------------------------+----------------------------------+
+;; |   2  | collect 2                      | collect any, must be 2           |
+;; +------+--------------------------------+----------------------------------+
+;; |  -2  | collect abs round -2           | collect any                      |
+;; +------+--------------------------------+----------------------------------+
 
 (define (macro-call? token)
   (lookup-macro token))
