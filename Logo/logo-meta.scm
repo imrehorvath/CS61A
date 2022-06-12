@@ -120,12 +120,9 @@
 	      (else (iter (cdr formals) cnt))))
       (iter formals 0))
     (let ((req (number-of-required formals)))
-      (if (= req
-	     (length formals))
+      (if (= req (length formals))
 	  req
-	  (if (> req 0)
-	      (- req)
-	      -0.1))))
+	  (- req))))
   (if (ask line-obj 'empty?)
       (logo-error "Empty procedure definition")
       (let ((name (ask line-obj 'next)))
@@ -489,7 +486,7 @@
 					     env
 					     (macro-name macro))
 			     env)))
-            (else  ;; procedure application
+            (else  ;; procedure call
 	     (let ((proc (lookup-procedure token)))
 	       (if (not proc)
 		   (logo-error "I don't know how to" token)
@@ -499,9 +496,7 @@
 				       (arg-count proc)))
 			  (n (if paren-flag
 				 -1
-				 (if (negative? arg-cnt)
-				     (abs (round arg-cnt))
-				     arg-cnt)))
+				 (abs arg-cnt)))
 			  (collected-args (collect-n-args n
 							  line-obj
 							  env
@@ -517,17 +512,17 @@
   
   (eval-helper #f))
 
-;; +------+--------------------------------+----------------------------------+
-;; |      | PROC "A "B ...                 | (PROC "A "B ...)                 |
-;; +------+--------------------------------+----------------------------------+
-;; |  (2) | cons env, collect 2            | cons env, collect any, must be 2 |
-;; +------+--------------------------------+----------------------------------+
-;; | (-2) | cons env, collect abs round -2 | cons env, collect any            |
-;; +------+--------------------------------+----------------------------------+
-;; |   2  | collect 2                      | collect any, must be 2           |
-;; +------+--------------------------------+----------------------------------+
-;; |  -2  | collect abs round -2           | collect any                      |
-;; +------+--------------------------------+----------------------------------+
+;; +------+--------------------------+----------------------------------+
+;; |      | PROC "A "B ...           | (PROC "A "B ...)                 |
+;; +------+--------------------------+----------------------------------+
+;; |  (2) | cons env, collect 2      | cons env, collect any, must be 2 |
+;; +------+--------------------------+----------------------------------+
+;; | (-2) | cons env, collect abs -2 | cons env, collect any            |
+;; +------+--------------------------+----------------------------------+
+;; |   2  | collect 2                | collect any, must be 2           |
+;; +------+--------------------------+----------------------------------+
+;; |  -2  | collect abs -2           | collect any                      |
+;; +------+--------------------------+----------------------------------+
 
 (define (macro-call? token)
   (lookup-macro token))
